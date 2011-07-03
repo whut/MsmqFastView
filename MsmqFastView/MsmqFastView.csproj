@@ -60,9 +60,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Infrastrucure\Native.cs" />
+    <Compile Include="Infrastrucure\NativeMethods.cs" />
     <Compile Include="Infrastrucure\NotifyPropertyChangedExtensions.cs" />
-    <Compile Include="Infrastrucure\NativeWrapper.cs" />
+    <Compile Include="Infrastrucure\NativeMethodsWrapper.cs" />
     <Compile Include="MachineInfo.cs" />
     <Compile Include="MessageDetailsInfo.cs" />
     <Compile Include="QueueInfo.cs" />

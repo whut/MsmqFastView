@@ -30,6 +30,16 @@ namespace MsmqFastView
 
                 this.Refresh.Execute(o);
             });
+            this.PurgeAll = new DelegateCommand(o =>
+            {
+                foreach (MessageQueue queue in MessageQueue.GetPrivateQueuesByMachine(Environment.MachineName)
+                    .SelectMany(q => GetQueueWithSubQueues(q)))
+                {
+                    queue.Purge();
+                }
+
+                this.Refresh.Execute(o);
+            });
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -43,26 +53,13 @@ namespace MsmqFastView
                 if (this.queues == null)
                 {
                     this.queues = new List<QueueInfo>();
-                    foreach (MessageQueue queue in MessageQueue
-                        .GetPrivateQueuesByMachine(Environment.MachineName)
-                        .OrderBy(mq => mq.QueueName))
+                    foreach (MessageQueue queue in MessageQueue.GetPrivateQueuesByMachine(Environment.MachineName)
+                        .OrderBy(mq => mq.QueueName)
+                        .SelectMany(q => GetQueueWithSubQueues(q)))
                     {
-                        using (var mq = new MessageQueue(queue.Path))
-                        {
-                            this.queues.Add(new QueueInfo(queue.Path, MsmqUtil.GetQueueUri(queue).AbsolutePath.Substring("/".Length)));
-                            if (NativeWrapper.GetNumberOfSubqueues(queue.FormatName) > 0)
-                            {
-                                foreach (string subQueueName in NativeWrapper.GetSubqueueNames(queue.FormatName))
-                                {
-                                    using (var subQueue = new MessageQueue(queue.Path + ";" + subQueueName))
-                                    {
-                                        this.queues.Add(new QueueInfo(
-                                            subQueue.Path,
-                                            MsmqUtil.GetQueueUri(subQueue).AbsolutePath.Substring("/".Length).Replace(";", "#")));
-                                    }
-                                }
-                            }
-                        }
+                        this.queues.Add(new QueueInfo(
+                            queue.Path,
+                            MsmqUtil.GetQueueUri(queue).AbsolutePath.Substring("/".Length)));
                     }
 
                     this.LastRefresh = DateTime.Now;
@@ -76,5 +73,23 @@ namespace MsmqFastView
         public ICommand Refresh { get; private set; }
 
         public ICommand Purge { get; private set; }
+
+        public ICommand PurgeAll { get; private set; }
+
+        private static IEnumerable<MessageQueue> GetQueueWithSubQueues(MessageQueue queue)
+        {
+            yield return queue;
+
+            if (NativeMethodsWrapper.GetNumberOfSubqueues(queue.FormatName) > 0)
+            {
+                foreach (string subQueueName in NativeMethodsWrapper.GetSubqueueNames(queue.FormatName))
+                {
+                    using (MessageQueue subQueue = new MessageQueue(queue.Path + ";" + subQueueName))
+                    {
+                        yield return subQueue;
+                    }
+                }
+            }
+        }
     }
 }

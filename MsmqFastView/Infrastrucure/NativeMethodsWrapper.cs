@@ -7,23 +7,23 @@ using MsmqFastView.Infrastructure;
 
 namespace MsmqFastView.Infrastrucure
 {
-    public static class NativeWrapper
+    public static class NativeMethodsWrapper
     {
         public static int GetNumberOfSubqueues(string queueFormatName)
         {
             int[] propertyIds = new int[1] 
             {
-                Native.PROPID_MGMT_QUEUE.SUBQUEUE_COUNT, 
+                NativeMethods.PROPID_MGMT_QUEUE.SUBQUEUE_COUNT, 
             };
             GCHandle aPropId = GCHandle.Alloc(propertyIds, GCHandleType.Pinned);
 
-            Native.MQPROPVARIANT[] propertyValues = new Native.MQPROPVARIANT[1]
+            NativeMethods.MQPROPVARIANT[] propertyValues = new NativeMethods.MQPROPVARIANT[1]
             {
-                new Native.MQPROPVARIANT() { vt = (short)VarEnum.VT_NULL }
+                new NativeMethods.MQPROPVARIANT() { vt = (short)VarEnum.VT_NULL }
             };
             GCHandle aPropVar = GCHandle.Alloc(propertyValues, GCHandleType.Pinned);
 
-            Native.MQQUEUEPROPS queueProperties = new Native.MQQUEUEPROPS()
+            NativeMethods.MQQUEUEPROPS queueProperties = new NativeMethods.MQQUEUEPROPS()
             {
                 cProp = 1,
                 aPropID = aPropId.AddrOfPinnedObject(),
@@ -31,12 +31,12 @@ namespace MsmqFastView.Infrastrucure
                 aStatus = IntPtr.Zero
             };
 
-            uint returnCode = Native.MQMgmtGetInfo(Environment.MachineName, "QUEUE=" + queueFormatName, queueProperties);
+            uint returnCode = NativeMethods.MQMgmtGetInfo(Environment.MachineName, "QUEUE=" + queueFormatName, queueProperties);
 
             aPropId.Free();
             aPropVar.Free();
 
-            if (returnCode == Native.MQ_ERROR.QUEUE_NOT_ACTIVE)
+            if (returnCode == NativeMethods.MQ_ERROR.QUEUE_NOT_ACTIVE)
             {
                 return 0;
             }
@@ -51,17 +51,17 @@ namespace MsmqFastView.Infrastrucure
         {
             int[] propertyIds = new int[1] 
             {
-                Native.PROPID_MGMT_QUEUE.QUEUE_SUBQUEUE_NAMES
+                NativeMethods.PROPID_MGMT_QUEUE.QUEUE_SUBQUEUE_NAMES
             };
             GCHandle aPropId = GCHandle.Alloc(propertyIds, GCHandleType.Pinned);
 
-            Native.MQPROPVARIANT[] propertyValues = new Native.MQPROPVARIANT[1]
+            NativeMethods.MQPROPVARIANT[] propertyValues = new NativeMethods.MQPROPVARIANT[1]
             {
-                new Native.MQPROPVARIANT() { vt = (short)VarEnum.VT_NULL }
+                new NativeMethods.MQPROPVARIANT() { vt = (short)VarEnum.VT_NULL }
             };
             GCHandle aPropVar = GCHandle.Alloc(propertyValues, GCHandleType.Pinned);
 
-            Native.MQQUEUEPROPS queueProperties = new Native.MQQUEUEPROPS()
+            NativeMethods.MQQUEUEPROPS queueProperties = new NativeMethods.MQQUEUEPROPS()
             {
                 cProp = 1,
                 aPropID = aPropId.AddrOfPinnedObject(),
@@ -69,12 +69,12 @@ namespace MsmqFastView.Infrastrucure
                 aStatus = IntPtr.Zero
             };
 
-            uint returnCode = Native.MQMgmtGetInfo(Environment.MachineName, "QUEUE=" + queueFormatName, queueProperties);
+            uint returnCode = NativeMethods.MQMgmtGetInfo(Environment.MachineName, "QUEUE=" + queueFormatName, queueProperties);
 
             aPropId.Free();
             aPropVar.Free();
 
-            if (returnCode == Native.MQ_ERROR.QUEUE_NOT_ACTIVE)
+            if (returnCode == NativeMethods.MQ_ERROR.QUEUE_NOT_ACTIVE)
             {
                 return Enumerable.Empty<string>();
             }
@@ -89,10 +89,10 @@ namespace MsmqFastView.Infrastrucure
             foreach (var elem in elems)
             {
                 subQueueNames.Add(Marshal.PtrToStringUni(elem));
-                Native.MQFreeMemory(elem);
+                NativeMethods.MQFreeMemory(elem);
             }
 
-            Native.MQFreeMemory(propertyValues[0].union.calpwstr.pElems);
+            NativeMethods.MQFreeMemory(propertyValues[0].union.calpwstr.pElems);
 
             return subQueueNames;
         }
