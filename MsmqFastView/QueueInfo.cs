@@ -60,7 +60,7 @@ namespace MsmqFastView
                                 m.Id,
                                 m.Label,
                                 m.SentTime,
-                                MsmqUtil.GetQueueUri(m.ResponseQueue).ToString().Substring("msmq://".Length)))
+                                m.ResponseQueue != null ? MsmqUtil.GetQueueUri(m.ResponseQueue).ToString().Substring("msmq://".Length) : string.Empty))
                             .ToList();
                     }
                 }
