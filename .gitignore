@@ -1,0 +1,7 @@
+# Visual Studio
+/*.suo
+/*/bin
+/*/obj
+
+# StyleCop
+/*/StyleCop.Cache

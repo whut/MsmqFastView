@@ -1,0 +1,57 @@
+﻿<Window x:Class="MsmqFastView.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="600" Width="600">
+    <Window.InputBindings>
+        <KeyBinding Key="F5" Command="{Binding Refresh}" />
+        <KeyBinding Key="F8" Command="{Binding Purge}" />
+    </Window.InputBindings>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Button Grid.Row="0" Grid.Column="0" Command="{Binding Refresh}" Content="Refresh queue list (F5)" />
+
+        <Button Grid.Row="0" Grid.Column="1" Command="{Binding Purge}" Content="Purge all queues (F8)" />
+
+        <ScrollViewer Grid.Row="1" Grid.Column="0">
+            <ListBox x:Name="QueuesListBox" Width="300" ItemsSource="{Binding Queues}" IsSynchronizedWithCurrentItem="True">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Margin="1" Command="{Binding Refresh}" Content="R" Width="20" ToolTip="Refresh messages from this queue" />
+                            <TextBlock Margin="1" Text="{Binding Name}" Width="230" />
+                            <Button Margin="1" Command="{Binding Purge}" Content="P" Width="20" ToolTip="Purge messages from this queue" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
+
+        <DataGrid Grid.Row="1" Grid.Column="1" ItemsSource="{Binding ElementName=QueuesListBox, Path=SelectedItem.Messages}" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Label" Binding="{Binding Label}" />
+                <DataGridTextColumn Header="Sent" Binding="{Binding Sent}" />
+                <DataGridTextColumn Header="Response queue" Binding="{Binding ResponseQueue}" />
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
+            </DataGrid.Columns>
+            
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock Text="{Binding Details.CorrelationId}" />
+                        <TextBlock Text="{Binding Details.Body}" />
+                    </StackPanel>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+        </DataGrid>
+    </Grid>
+</Window>
