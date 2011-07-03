@@ -15,6 +15,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
+            <RowDefinition Height="20" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
@@ -22,7 +23,9 @@
 
         <Button Grid.Row="0" Grid.Column="1" Command="{Binding Purge}" Content="Purge all queues (F8)" />
 
-        <ScrollViewer Grid.Row="1" Grid.Column="0">
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding LastRefresh}" TextAlignment="Center" />
+
+        <ScrollViewer Grid.Row="2" Grid.Column="0">
             <ListBox x:Name="QueuesListBox" Width="300" ItemsSource="{Binding Queues}" IsSynchronizedWithCurrentItem="True">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -36,14 +39,14 @@
             </ListBox>
         </ScrollViewer>
 
-        <DataGrid Grid.Row="1" Grid.Column="1" ItemsSource="{Binding ElementName=QueuesListBox, Path=SelectedItem.Messages}" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True">
+        <DataGrid Grid.Row="2" Grid.Column="1" ItemsSource="{Binding ElementName=QueuesListBox, Path=SelectedItem.Messages}" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Label" Binding="{Binding Label}" />
                 <DataGridTextColumn Header="Sent" Binding="{Binding Sent}" />
                 <DataGridTextColumn Header="Response queue" Binding="{Binding ResponseQueue}" />
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
             </DataGrid.Columns>
-            
+
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <StackPanel>

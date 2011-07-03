@@ -34,6 +34,8 @@ namespace MsmqFastView
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public DateTime LastRefresh { get; private set; }
+
         public List<QueueInfo> Queues
         {
             get
@@ -62,6 +64,9 @@ namespace MsmqFastView
                             }
                         }
                     }
+
+                    this.LastRefresh = DateTime.Now;
+                    this.PropertyChanged.Raise(this, "LastRefresh");
                 }
 
                 return this.queues;
