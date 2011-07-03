@@ -18,6 +18,11 @@ namespace MsmqFastView.Infrastrucure
             return GetSubqueueNames(messageQueue.FormatName);
         }
 
+        public static int GetNumberOfMessages(this MessageQueue messageQueue)
+        {
+            return GetNumberOfMessages(messageQueue.FormatName);
+        }
+
         public static int GetNumberOfSubqueues(string queueFormatName)
         {
             int[] propertyIds = new int[1] 
@@ -104,6 +109,44 @@ namespace MsmqFastView.Infrastrucure
             NativeMethods.MQFreeMemory(propertyValues[0].union.calpwstr.pElems);
 
             return subQueueNames;
+        }
+
+        public static int GetNumberOfMessages(string queueFormatName)
+        {
+            int[] propertyIds = new int[1] 
+            {
+                NativeMethods.PROPID_MGMT_QUEUE.MESSAGE_COUNT, 
+            };
+            GCHandle aPropId = GCHandle.Alloc(propertyIds, GCHandleType.Pinned);
+
+            NativeMethods.MQPROPVARIANT[] propertyValues = new NativeMethods.MQPROPVARIANT[1]
+            {
+                new NativeMethods.MQPROPVARIANT() { vt = (short)VarEnum.VT_NULL }
+            };
+            GCHandle aPropVar = GCHandle.Alloc(propertyValues, GCHandleType.Pinned);
+
+            NativeMethods.MQQUEUEPROPS queueProperties = new NativeMethods.MQQUEUEPROPS()
+            {
+                cProp = 1,
+                aPropID = aPropId.AddrOfPinnedObject(),
+                aPropVar = aPropVar.AddrOfPinnedObject(),
+                aStatus = IntPtr.Zero
+            };
+
+            uint returnCode = NativeMethods.MQMgmtGetInfo(Environment.MachineName, "QUEUE=" + queueFormatName, queueProperties);
+
+            aPropId.Free();
+            aPropVar.Free();
+
+            if (returnCode == NativeMethods.MQ_ERROR.QUEUE_NOT_ACTIVE)
+            {
+                return 0;
+            }
+
+            Debug.Assert(returnCode == 0, string.Format("MQMgmtGetInfo returned error: {0:x8}", returnCode));
+            Debug.Assert(((VarEnum)propertyValues[0].vt) == VarEnum.VT_UI4, "Unexpected type returned, should be " + VarEnum.VT_UI4 + ", but was " + ((VarEnum)propertyValues[0].vt) + ".");
+
+            return (int)propertyValues[0].union.ulVal;
         }
     }
 }

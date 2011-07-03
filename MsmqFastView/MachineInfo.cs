@@ -16,6 +16,7 @@ namespace MsmqFastView
 
         public MachineInfo()
         {
+            this.ShowOnlyNonEmpty = true;
             this.Refresh = new DelegateCommand(o =>
             {
                 this.queues = null;
@@ -46,6 +47,8 @@ namespace MsmqFastView
 
         public DateTime LastRefresh { get; private set; }
 
+        public bool ShowOnlyNonEmpty { get; set; }
+
         public List<QueueInfo> Queues
         {
             get
@@ -55,7 +58,7 @@ namespace MsmqFastView
                     this.queues = new List<QueueInfo>();
                     foreach (MessageQueue queue in MessageQueue.GetPrivateQueuesByMachine(Environment.MachineName)
                         .OrderBy(mq => mq.QueueName)
-                        .SelectMany(q => GetQueueWithSubQueues(q)))
+                        .SelectMany(q => this.GetQueueWithSubQueues(q)))
                     {
                         this.queues.Add(new QueueInfo(
                             queue.Path,
@@ -76,8 +79,13 @@ namespace MsmqFastView
 
         public ICommand PurgeAll { get; private set; }
 
-        private static IEnumerable<MessageQueue> GetQueueWithSubQueues(MessageQueue queue)
+        private IEnumerable<MessageQueue> GetQueueWithSubQueues(MessageQueue queue)
         {
+            if (this.ShowOnlyNonEmpty && queue.GetNumberOfMessages() == 0)
+            {
+                yield break;
+            }
+
             yield return queue;
 
             if (queue.GetNumberOfSubqueues() > 0)

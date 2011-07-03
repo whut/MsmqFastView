@@ -1,4 +1,3 @@
- - option "show only not empty queues"
  - journal queue
  - dead-letter queue
  - outgoing queue
