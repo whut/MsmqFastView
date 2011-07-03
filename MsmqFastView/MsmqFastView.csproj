@@ -62,7 +62,7 @@
     </ApplicationDefinition>
     <Compile Include="Infrastrucure\NativeMethods.cs" />
     <Compile Include="Infrastrucure\NotifyPropertyChangedExtensions.cs" />
-    <Compile Include="Infrastrucure\NativeMethodsWrapper.cs" />
+    <Compile Include="Infrastrucure\MessageQueueExtensions.cs" />
     <Compile Include="MachineInfo.cs" />
     <Compile Include="MessageDetailsInfo.cs" />
     <Compile Include="QueueInfo.cs" />

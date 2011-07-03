@@ -1,14 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
+using System.Messaging;
 using System.Runtime.InteropServices;
 using MsmqFastView.Infrastructure;
 
 namespace MsmqFastView.Infrastrucure
 {
-    public static class NativeMethodsWrapper
+    public static class MessageQueueExtensions
     {
+        public static int GetNumberOfSubqueues(this MessageQueue messageQueue)
+        {
+            return GetNumberOfSubqueues(messageQueue.FormatName);
+        }
+
+        public static string[] GetSubqueueNames(this MessageQueue messageQueue)
+        {
+            return GetSubqueueNames(messageQueue.FormatName);
+        }
+
         public static int GetNumberOfSubqueues(string queueFormatName)
         {
             int[] propertyIds = new int[1] 
@@ -47,7 +56,7 @@ namespace MsmqFastView.Infrastrucure
             return (int)propertyValues[0].union.ulVal;
         }
 
-        public static IEnumerable<string> GetSubqueueNames(string queueFormatName)
+        public static string[] GetSubqueueNames(string queueFormatName)
         {
             int[] propertyIds = new int[1] 
             {
@@ -76,7 +85,7 @@ namespace MsmqFastView.Infrastrucure
 
             if (returnCode == NativeMethods.MQ_ERROR.QUEUE_NOT_ACTIVE)
             {
-                return Enumerable.Empty<string>();
+                return new string[0];
             }
 
             Debug.Assert(returnCode == 0, string.Format("MQMgmtGetInfo returned error: {0:x8}", returnCode));
@@ -85,11 +94,11 @@ namespace MsmqFastView.Infrastrucure
             IntPtr[] elems = new IntPtr[propertyValues[0].union.calpwstr.cElems];
             Marshal.Copy(propertyValues[0].union.calpwstr.pElems, elems, 0, (int)propertyValues[0].union.calpwstr.cElems);
 
-            List<string> subQueueNames = new List<string>();
-            foreach (var elem in elems)
+            string[] subQueueNames = new string[elems.Length];
+            for (int i = 0; i < elems.Length; i++)
             {
-                subQueueNames.Add(Marshal.PtrToStringUni(elem));
-                NativeMethods.MQFreeMemory(elem);
+                subQueueNames[i] = Marshal.PtrToStringUni(elems[i]);
+                NativeMethods.MQFreeMemory(elems[i]);
             }
 
             NativeMethods.MQFreeMemory(propertyValues[0].union.calpwstr.pElems);

@@ -80,9 +80,9 @@ namespace MsmqFastView
         {
             yield return queue;
 
-            if (NativeMethodsWrapper.GetNumberOfSubqueues(queue.FormatName) > 0)
+            if (queue.GetNumberOfSubqueues() > 0)
             {
-                foreach (string subQueueName in NativeMethodsWrapper.GetSubqueueNames(queue.FormatName))
+                foreach (string subQueueName in queue.GetSubqueueNames())
                 {
                     using (MessageQueue subQueue = new MessageQueue(queue.Path + ";" + subQueueName))
                     {
