@@ -39,11 +39,20 @@ namespace MsmqFastView
                         messageQueue.MessageReadPropertyFilter.Body = true;
                         messageQueue.MessageReadPropertyFilter.CorrelationId = true;
 
-                        using (var message = messageQueue.PeekById(this.Id))
+                        try
+                        {
+                            using (var message = messageQueue.PeekById(this.Id))
+                            {
+                                this.details = new MessageDetailsInfo(
+                                    new StreamReader(message.BodyStream).ReadToEnd(),
+                                    message.CorrelationId);
+                            }
+                        }
+                        catch (InvalidOperationException)
                         {
                             this.details = new MessageDetailsInfo(
-                                new StreamReader(message.BodyStream).ReadToEnd(),
-                                message.CorrelationId);
+                                "No message with the id " + this.Id + " exists. Probably it was consumed.",
+                                string.Empty);
                         }
                     }
                 }

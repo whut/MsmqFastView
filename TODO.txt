@@ -2,3 +2,4 @@
  - journal queue
  - dead-letter queue
  - outgoing queue
+ - more error handling
