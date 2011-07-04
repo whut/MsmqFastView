@@ -1,3 +1,3 @@
-MSMQFastView is very, very simple MSMQ queues viewer.
+MSMQFastView is very, very simple MSMQ queues viewer. Its UI is optimized for speed.
 
 It supports subqueues and showing body of arbitrary large messages.
