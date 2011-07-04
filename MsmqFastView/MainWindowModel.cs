@@ -8,11 +8,11 @@ using MsmqFastView.Infrastructure;
 
 namespace MsmqFastView
 {
-    public class MachineInfo : INotifyPropertyChanged
+    public class MainWindowModel : INotifyPropertyChanged
     {
-        private List<QueueInfo> queues;
+        private List<QueueModel> queues;
 
-        public MachineInfo()
+        public MainWindowModel()
         {
             this.ApplicationVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             this.ShowOnlyNonEmpty = true;
@@ -50,18 +50,18 @@ namespace MsmqFastView
 
         public string ApplicationVersion { get; set; }
 
-        public List<QueueInfo> Queues
+        public List<QueueModel> Queues
         {
             get
             {
                 if (this.queues == null)
                 {
-                    this.queues = new List<QueueInfo>();
+                    this.queues = new List<QueueModel>();
                     foreach (MessageQueue queue in MessageQueue.GetPrivateQueuesByMachine(Environment.MachineName)
                         .OrderBy(mq => mq.QueueName)
                         .SelectMany(q => this.GetQueueWithSubQueues(q)))
                     {
-                        this.queues.Add(new QueueInfo(
+                        this.queues.Add(new QueueModel(
                             queue.Path));
                     }
 

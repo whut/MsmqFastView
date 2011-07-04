@@ -57,9 +57,9 @@
     <Compile Include="Infrastructure\NativeMethods.cs" />
     <Compile Include="Infrastructure\NotifyPropertyChangedExtensions.cs" />
     <Compile Include="Infrastructure\MessageQueueExtensions.cs" />
-    <Compile Include="MachineInfo.cs" />
-    <Compile Include="MessageDetailsInfo.cs" />
-    <Compile Include="QueueInfo.cs" />
+    <Compile Include="MainWindowModel.cs" />
+    <Compile Include="MessageDetailsModel.cs" />
+    <Compile Include="QueueModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -75,7 +75,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MessageInfo.cs" />
+    <Compile Include="MessageModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

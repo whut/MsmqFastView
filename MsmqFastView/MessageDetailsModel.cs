@@ -1,8 +1,8 @@
 ﻿namespace MsmqFastView
 {
-    public class MessageDetailsInfo
+    public class MessageDetailsModel
     {
-        public MessageDetailsInfo(string body, string correlationId)
+        public MessageDetailsModel(string body, string correlationId)
         {
             this.Body = body;
             this.CorrelationId = correlationId;

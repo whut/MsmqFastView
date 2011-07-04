@@ -7,7 +7,7 @@ namespace MsmqFastView
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = new MachineInfo();
+            this.DataContext = new MainWindowModel();
         }
     }
 }

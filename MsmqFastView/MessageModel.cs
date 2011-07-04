@@ -4,13 +4,13 @@ using System.Messaging;
 
 namespace MsmqFastView
 {
-    public class MessageInfo
+    public class MessageModel
     {
         private string queuePath;
 
-        private MessageDetailsInfo details;
+        private MessageDetailsModel details;
 
-        public MessageInfo(string queuePath, string id, string label, DateTime sent, string responseQueue)
+        public MessageModel(string queuePath, string id, string label, DateTime sent, string responseQueue)
         {
             this.queuePath = queuePath;
             this.Id = id;
@@ -27,7 +27,7 @@ namespace MsmqFastView
 
         public string ResponseQueue { get; private set; }
 
-        public MessageDetailsInfo Details
+        public MessageDetailsModel Details
         {
             get
             {
@@ -43,14 +43,14 @@ namespace MsmqFastView
                         {
                             using (var message = messageQueue.PeekById(this.Id))
                             {
-                                this.details = new MessageDetailsInfo(
+                                this.details = new MessageDetailsModel(
                                     new StreamReader(message.BodyStream).ReadToEnd(),
                                     message.CorrelationId);
                             }
                         }
                         catch (InvalidOperationException)
                         {
-                            this.details = new MessageDetailsInfo(
+                            this.details = new MessageDetailsModel(
                                 "No message with the id " + this.Id + " exists. Probably it was consumed.",
                                 string.Empty);
                         }

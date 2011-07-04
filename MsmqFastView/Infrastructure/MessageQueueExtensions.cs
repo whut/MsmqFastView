@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Messaging;
 using System.Runtime.InteropServices;
-using MsmqFastView.Infrastructure;
 
 namespace MsmqFastView.Infrastructure
 {

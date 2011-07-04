@@ -8,15 +8,15 @@ using MsmqFastView.Infrastructure;
 
 namespace MsmqFastView
 {
-    public class QueueInfo : INotifyPropertyChanged
+    public class QueueModel : INotifyPropertyChanged
     {
         private const string PathPrefix = "FORMATNAME:DIRECT=OS:";
 
         private string path;
 
-        private List<MessageInfo> messages;
+        private List<MessageModel> messages;
 
-        public QueueInfo(string path)
+        public QueueModel(string path)
         {
             this.path = path;
             this.Name = GetFriendlyName(path);
@@ -40,7 +40,7 @@ namespace MsmqFastView
 
         public string Name { get; private set; }
 
-        public List<MessageInfo> Messages
+        public List<MessageModel> Messages
         {
             get
             {
@@ -57,7 +57,7 @@ namespace MsmqFastView
                         this.messages = messageQueue
                             .Cast<Message>()
                             .Reverse()
-                            .Select(m => new MessageInfo(
+                            .Select(m => new MessageModel(
                                 this.path,
                                 m.Id,
                                 m.Label,
