@@ -6,7 +6,6 @@ using System.Messaging;
 using System.Windows.Input;
 using MsmqFastView.Infrastructure;
 using MsmqFastView.Infrastrucure;
-using Rhino.ServiceBus.Msmq;
 
 namespace MsmqFastView
 {
@@ -61,8 +60,7 @@ namespace MsmqFastView
                         .SelectMany(q => this.GetQueueWithSubQueues(q)))
                     {
                         this.queues.Add(new QueueInfo(
-                            queue.Path,
-                            MsmqUtil.GetQueueUri(queue).AbsolutePath.Substring("/".Length)));
+                            queue.Path));
                     }
 
                     this.LastRefresh = DateTime.Now;
