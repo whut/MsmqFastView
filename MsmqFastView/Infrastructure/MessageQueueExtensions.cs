@@ -3,7 +3,7 @@ using System.Messaging;
 using System.Runtime.InteropServices;
 using MsmqFastView.Infrastructure;
 
-namespace MsmqFastView.Infrastrucure
+namespace MsmqFastView.Infrastructure
 {
     public static class MessageQueueExtensions
     {

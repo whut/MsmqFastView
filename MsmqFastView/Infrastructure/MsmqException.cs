@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace MsmqFastView.Infrastrucure
+namespace MsmqFastView.Infrastructure
 {
     [Serializable]
     public class MsmqException : Exception

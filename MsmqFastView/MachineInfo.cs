@@ -5,7 +5,7 @@ using System.Linq;
 using System.Messaging;
 using System.Windows.Input;
 using MsmqFastView.Infrastructure;
-using MsmqFastView.Infrastrucure;
+using MsmqFastView.Infrastructure;
 
 namespace MsmqFastView
 {
