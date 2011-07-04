@@ -5,7 +5,6 @@ using System.Linq;
 using System.Messaging;
 using System.Windows.Input;
 using MsmqFastView.Infrastructure;
-using MsmqFastView.Infrastructure;
 
 namespace MsmqFastView
 {
@@ -15,6 +14,7 @@ namespace MsmqFastView
 
         public MachineInfo()
         {
+            this.ApplicationVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             this.ShowOnlyNonEmpty = true;
             this.Refresh = new DelegateCommand(o =>
             {
@@ -47,6 +47,8 @@ namespace MsmqFastView
         public DateTime LastRefresh { get; private set; }
 
         public bool ShowOnlyNonEmpty { get; set; }
+
+        public string ApplicationVersion { get; set; }
 
         public List<QueueInfo> Queues
         {
