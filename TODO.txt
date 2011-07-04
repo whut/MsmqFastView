@@ -2,3 +2,4 @@
  - dead-letter queue
  - outgoing queue
  - more error handling
+ - saving windows size and position
