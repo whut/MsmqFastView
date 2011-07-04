@@ -53,6 +53,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Infrastrucure\MsmqException.cs" />
     <Compile Include="Infrastrucure\NativeMethods.cs" />
     <Compile Include="Infrastrucure\NotifyPropertyChangedExtensions.cs" />
     <Compile Include="Infrastrucure\MessageQueueExtensions.cs" />
