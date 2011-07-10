@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Messaging;
+using System.Windows;
 using System.Windows.Input;
 using MsmqFastView.Infrastructure;
 
@@ -44,7 +45,31 @@ namespace MsmqFastView
         {
             get
             {
-                if (this.messages == null)
+                this.InitMessages();
+
+                return this.messages;
+            }
+        }
+
+        public ICommand Refresh { get; private set; }
+
+        public ICommand Purge { get; private set; }
+
+        private static string GetFriendlyName(string queuePath)
+        {
+            if (queuePath.StartsWith(PathPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                return queuePath.Substring(PathPrefix.Length);
+            }
+
+            return queuePath;
+        }
+
+        private void InitMessages()
+        {
+            if (this.messages == null)
+            {
+                try
                 {
                     using (var messageQueue = new MessageQueue(this.path))
                     {
@@ -66,23 +91,22 @@ namespace MsmqFastView
                             .ToList();
                     }
                 }
+                catch (Exception ex)
+                {
+                    this.messages = new List<MessageModel>();
 
-                return this.messages;
+                    MessageBox.Show(
+                        "Error during reading messages. Try refreshing messages list.\n"
+                        + "\n"
+                        + "Details:\n"
+                        + ex.ToString(),
+                        "Error during reading messages",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+
+                    throw;
+                }
             }
-        }
-
-        public ICommand Refresh { get; private set; }
-
-        public ICommand Purge { get; private set; }
-
-        private static string GetFriendlyName(string queuePath)
-        {
-            if (queuePath.StartsWith(PathPrefix, StringComparison.OrdinalIgnoreCase))
-            {
-                return queuePath.Substring(PathPrefix.Length);
-            }
-
-            return queuePath;
         }
     }
 }

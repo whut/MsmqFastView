@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Messaging;
+using System.Windows;
 using System.Windows.Input;
 using MsmqFastView.Infrastructure;
 
@@ -49,30 +50,17 @@ namespace MsmqFastView
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public DateTime LastRefresh { get; private set; }
-
         public bool ShowOnlyNonEmpty { get; set; }
 
-        public string ApplicationVersion { get; set; }
+        public DateTime LastRefresh { get; private set; }
+
+        public string ApplicationVersion { get; private set; }
 
         public List<QueueModel> Queues
         {
             get
             {
-                if (this.queues == null)
-                {
-                    this.queues = new List<QueueModel>();
-                    foreach (MessageQueue queue in MessageQueue.GetPrivateQueuesByMachine(Environment.MachineName)
-                        .OrderBy(mq => mq.QueueName)
-                        .SelectMany(q => this.GetQueueWithSubQueues(q)))
-                    {
-                        this.queues.Add(new QueueModel(
-                            queue.Path));
-                    }
-
-                    this.LastRefresh = DateTime.Now;
-                    this.PropertyChanged.Raise(this, "LastRefresh");
-                }
+                this.InitializeQueues();
 
                 return this.queues;
             }
@@ -85,6 +73,42 @@ namespace MsmqFastView
         public ICommand PurgeAll { get; private set; }
 
         public ICommand OpenHomePage { get; private set; }
+
+        private void InitializeQueues()
+        {
+            if (this.queues == null)
+            {
+                this.queues = new List<QueueModel>();
+                try
+                {
+                    foreach (MessageQueue queue in MessageQueue.GetPrivateQueuesByMachine(Environment.MachineName)
+                        .OrderBy(mq => mq.QueueName)
+                        .SelectMany(q => this.GetQueueWithSubQueues(q)))
+                    {
+                        this.queues.Add(new QueueModel(
+                            queue.Path));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        "Error during reading queues. Try refreshing queues list.\n"
+                        + "\n"
+                        + "Details:\n"
+                        + ex.ToString(),
+                        "Error during reading queues",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+
+                    throw;
+                }
+                finally
+                {
+                    this.LastRefresh = DateTime.Now;
+                    this.PropertyChanged.Raise(this, "LastRefresh");
+                }
+            }
+        }
 
         private IEnumerable<MessageQueue> GetQueueWithSubQueues(MessageQueue queue)
         {

@@ -31,33 +31,38 @@ namespace MsmqFastView
         {
             get
             {
-                if (this.details == null)
-                {
-                    using (var messageQueue = new MessageQueue(this.queuePath))
-                    {
-                        messageQueue.MessageReadPropertyFilter.ClearAll();
-                        messageQueue.MessageReadPropertyFilter.Body = true;
-                        messageQueue.MessageReadPropertyFilter.CorrelationId = true;
-
-                        try
-                        {
-                            using (var message = messageQueue.PeekById(this.Id))
-                            {
-                                this.details = new MessageDetailsModel(
-                                    new StreamReader(message.BodyStream).ReadToEnd(),
-                                    message.CorrelationId);
-                            }
-                        }
-                        catch (InvalidOperationException)
-                        {
-                            this.details = new MessageDetailsModel(
-                                "No message with the id " + this.Id + " exists. Probably it was consumed.",
-                                string.Empty);
-                        }
-                    }
-                }
+                this.InitDetails();
 
                 return this.details;
+            }
+        }
+
+        private void InitDetails()
+        {
+            if (this.details == null)
+            {
+                using (var messageQueue = new MessageQueue(this.queuePath))
+                {
+                    messageQueue.MessageReadPropertyFilter.ClearAll();
+                    messageQueue.MessageReadPropertyFilter.Body = true;
+                    messageQueue.MessageReadPropertyFilter.CorrelationId = true;
+
+                    try
+                    {
+                        using (var message = messageQueue.PeekById(this.Id))
+                        {
+                            this.details = new MessageDetailsModel(
+                                new StreamReader(message.BodyStream).ReadToEnd(),
+                                message.CorrelationId);
+                        }
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        this.details = new MessageDetailsModel(
+                            "No message with the id " + this.Id + " exists. Probably it was consumed few moments ago.",
+                            string.Empty);
+                    }
+                }
             }
         }
     }
