@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Messaging;
 using System.Windows.Input;
@@ -40,6 +41,10 @@ namespace MsmqFastView
 
                 this.Refresh.Execute(o);
             });
+            this.OpenHomePage = new DelegateCommand(o =>
+            {
+                Process.Start("https://github.com/whut/MsmqFastView");
+            });
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -78,6 +83,8 @@ namespace MsmqFastView
         public ICommand Purge { get; private set; }
 
         public ICommand PurgeAll { get; private set; }
+
+        public ICommand OpenHomePage { get; private set; }
 
         private IEnumerable<MessageQueue> GetQueueWithSubQueues(MessageQueue queue)
         {

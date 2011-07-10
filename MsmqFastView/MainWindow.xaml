@@ -17,23 +17,27 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="23" />
             <RowDefinition Height="23" />
-            <RowDefinition Height="23" />
             <RowDefinition />
+            <RowDefinition Height="23" />
         </Grid.RowDefinitions>
 
         <Button Grid.Row="0" Grid.Column="0" Command="{Binding Refresh}" Content="Refresh queue list (F5)" />
 
-        <Button Grid.Row="0" Grid.Column="1" Command="{Binding Purge}" Content="Purge all queues (F8)" />
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Command="{Binding Purge}" Content="Purge all queues (F8)" />
 
+            <Button Grid.Column="1" Command="{Binding PurgeAll}" Content="Purge all queues and subqueues (F9)" />
+        </Grid>
+        
         <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding ShowOnlyNonEmpty}" Command="{Binding Refresh}" Content="Show only non-empty queues" Margin="1" />
 
-        <Button Grid.Row="1" Grid.Column="1" Command="{Binding PurgeAll}" Content="Purge all queues and subqueues (F9)" />
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding LastRefresh}" Margin="1" TextAlignment="Center" />
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="{Binding LastRefresh}" Margin="1" TextAlignment="Center" />
-
-        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ApplicationVersion}" Margin="1" TextAlignment="Right" />
-
-        <ScrollViewer Grid.Row="3" Grid.Column="0">
+        <ScrollViewer Grid.Row="2" Grid.Column="0">
             <ListBox x:Name="QueuesListBox" Width="300" ItemsSource="{Binding Queues}" IsSynchronizedWithCurrentItem="True">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -47,7 +51,7 @@
             </ListBox>
         </ScrollViewer>
 
-        <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding ElementName=QueuesListBox, Path=SelectedItem.Messages}" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True">
+        <DataGrid Grid.Row="2" Grid.Column="1" ItemsSource="{Binding ElementName=QueuesListBox, Path=SelectedItem.Messages}" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Label" Binding="{Binding Label}" />
                 <DataGridTextColumn Header="Sent" Binding="{Binding Sent}" />
@@ -64,5 +68,16 @@
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>
         </DataGrid>
+
+        <StatusBar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+            <StatusBarItem DockPanel.Dock="Right">
+                <Binding Path="ApplicationVersion" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock>
+                    <Hyperlink Command="{Binding OpenHomePage}">https://github.com/whut/MsmqFastView</Hyperlink>
+                </TextBlock>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>
