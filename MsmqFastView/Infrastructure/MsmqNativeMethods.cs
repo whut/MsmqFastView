@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace MsmqFastView.Infrastructure
 {
-    public static class NativeMethods
+    public static class MsmqNativeMethods
     {
         [DllImport("mqrt.dll", CharSet = CharSet.Unicode)]
         public static extern uint MQMgmtGetInfo(string machineName, string objectName, MQQUEUEPROPS queueProperties);

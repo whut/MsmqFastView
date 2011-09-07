@@ -44,6 +44,7 @@
     <Reference Include="System.Messaging" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -57,11 +58,18 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Infrastructure\MsmqException.cs" />
-    <Compile Include="Infrastructure\NativeMethods.cs" />
+    <Compile Include="Infrastructure\MsmqNativeMethods.cs" />
     <Compile Include="Infrastructure\NotifyPropertyChangedExtensions.cs" />
-    <Compile Include="Infrastructure\MessageQueueExtensions.cs" />
+    <Compile Include="Infrastructure\MsmqExtensions.cs" />
+    <Compile Include="Infrastructure\WindowExtensions.cs" />
+    <Compile Include="Infrastructure\WindowNativeMethods.cs" />
     <Compile Include="MainWindowModel.cs" />
     <Compile Include="MessageDetailsModel.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="QueueModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -85,7 +93,12 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="app.manifest" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Settings.StyleCop" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

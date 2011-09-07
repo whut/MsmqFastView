@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace MsmqFastView.Infrastructure
 {
-    public static class MessageQueueExtensions
+    public static class MsmqExtensions
     {
         public static int GetNumberOfSubqueues(this MessageQueue messageQueue)
         {
@@ -25,17 +25,17 @@ namespace MsmqFastView.Infrastructure
         {
             int[] propertyIds = new int[1] 
             {
-                NativeMethods.PROPID_MGMT_QUEUE.SUBQUEUE_COUNT, 
+                MsmqNativeMethods.PROPID_MGMT_QUEUE.SUBQUEUE_COUNT, 
             };
             GCHandle aPropId = GCHandle.Alloc(propertyIds, GCHandleType.Pinned);
 
-            NativeMethods.MQPROPVARIANT[] propertyValues = new NativeMethods.MQPROPVARIANT[1]
+            MsmqNativeMethods.MQPROPVARIANT[] propertyValues = new MsmqNativeMethods.MQPROPVARIANT[1]
             {
-                new NativeMethods.MQPROPVARIANT() { vt = (short)VarEnum.VT_NULL }
+                new MsmqNativeMethods.MQPROPVARIANT() { vt = (short)VarEnum.VT_NULL }
             };
             GCHandle aPropVar = GCHandle.Alloc(propertyValues, GCHandleType.Pinned);
 
-            NativeMethods.MQQUEUEPROPS queueProperties = new NativeMethods.MQQUEUEPROPS()
+            MsmqNativeMethods.MQQUEUEPROPS queueProperties = new MsmqNativeMethods.MQQUEUEPROPS()
             {
                 cProp = 1,
                 aPropID = aPropId.AddrOfPinnedObject(),
@@ -43,12 +43,12 @@ namespace MsmqFastView.Infrastructure
                 aStatus = IntPtr.Zero
             };
 
-            uint returnCode = NativeMethods.MQMgmtGetInfo(Environment.MachineName, "QUEUE=" + queueFormatName, queueProperties);
+            uint returnCode = MsmqNativeMethods.MQMgmtGetInfo(Environment.MachineName, "QUEUE=" + queueFormatName, queueProperties);
 
             aPropId.Free();
             aPropVar.Free();
 
-            if (returnCode == NativeMethods.MQ_ERROR.QUEUE_NOT_ACTIVE)
+            if (returnCode == MsmqNativeMethods.MQ_ERROR.QUEUE_NOT_ACTIVE)
             {
                 return 0;
             }
@@ -63,17 +63,17 @@ namespace MsmqFastView.Infrastructure
         {
             int[] propertyIds = new int[1] 
             {
-                NativeMethods.PROPID_MGMT_QUEUE.QUEUE_SUBQUEUE_NAMES
+                MsmqNativeMethods.PROPID_MGMT_QUEUE.QUEUE_SUBQUEUE_NAMES
             };
             GCHandle aPropId = GCHandle.Alloc(propertyIds, GCHandleType.Pinned);
 
-            NativeMethods.MQPROPVARIANT[] propertyValues = new NativeMethods.MQPROPVARIANT[1]
+            MsmqNativeMethods.MQPROPVARIANT[] propertyValues = new MsmqNativeMethods.MQPROPVARIANT[1]
             {
-                new NativeMethods.MQPROPVARIANT() { vt = (short)VarEnum.VT_NULL }
+                new MsmqNativeMethods.MQPROPVARIANT() { vt = (short)VarEnum.VT_NULL }
             };
             GCHandle aPropVar = GCHandle.Alloc(propertyValues, GCHandleType.Pinned);
 
-            NativeMethods.MQQUEUEPROPS queueProperties = new NativeMethods.MQQUEUEPROPS()
+            MsmqNativeMethods.MQQUEUEPROPS queueProperties = new MsmqNativeMethods.MQQUEUEPROPS()
             {
                 cProp = 1,
                 aPropID = aPropId.AddrOfPinnedObject(),
@@ -81,12 +81,12 @@ namespace MsmqFastView.Infrastructure
                 aStatus = IntPtr.Zero
             };
 
-            uint returnCode = NativeMethods.MQMgmtGetInfo(Environment.MachineName, "QUEUE=" + queueFormatName, queueProperties);
+            uint returnCode = MsmqNativeMethods.MQMgmtGetInfo(Environment.MachineName, "QUEUE=" + queueFormatName, queueProperties);
 
             aPropId.Free();
             aPropVar.Free();
 
-            if (returnCode == NativeMethods.MQ_ERROR.QUEUE_NOT_ACTIVE)
+            if (returnCode == MsmqNativeMethods.MQ_ERROR.QUEUE_NOT_ACTIVE)
             {
                 return new string[0];
             }
@@ -101,10 +101,10 @@ namespace MsmqFastView.Infrastructure
             for (int i = 0; i < elems.Length; i++)
             {
                 subQueueNames[i] = Marshal.PtrToStringUni(elems[i]);
-                NativeMethods.MQFreeMemory(elems[i]);
+                MsmqNativeMethods.MQFreeMemory(elems[i]);
             }
 
-            NativeMethods.MQFreeMemory(propertyValues[0].union.calpwstr.pElems);
+            MsmqNativeMethods.MQFreeMemory(propertyValues[0].union.calpwstr.pElems);
 
             return subQueueNames;
         }
@@ -113,17 +113,17 @@ namespace MsmqFastView.Infrastructure
         {
             int[] propertyIds = new int[1] 
             {
-                NativeMethods.PROPID_MGMT_QUEUE.MESSAGE_COUNT, 
+                MsmqNativeMethods.PROPID_MGMT_QUEUE.MESSAGE_COUNT, 
             };
             GCHandle aPropId = GCHandle.Alloc(propertyIds, GCHandleType.Pinned);
 
-            NativeMethods.MQPROPVARIANT[] propertyValues = new NativeMethods.MQPROPVARIANT[1]
+            MsmqNativeMethods.MQPROPVARIANT[] propertyValues = new MsmqNativeMethods.MQPROPVARIANT[1]
             {
-                new NativeMethods.MQPROPVARIANT() { vt = (short)VarEnum.VT_NULL }
+                new MsmqNativeMethods.MQPROPVARIANT() { vt = (short)VarEnum.VT_NULL }
             };
             GCHandle aPropVar = GCHandle.Alloc(propertyValues, GCHandleType.Pinned);
 
-            NativeMethods.MQQUEUEPROPS queueProperties = new NativeMethods.MQQUEUEPROPS()
+            MsmqNativeMethods.MQQUEUEPROPS queueProperties = new MsmqNativeMethods.MQQUEUEPROPS()
             {
                 cProp = 1,
                 aPropID = aPropId.AddrOfPinnedObject(),
@@ -131,12 +131,12 @@ namespace MsmqFastView.Infrastructure
                 aStatus = IntPtr.Zero
             };
 
-            uint returnCode = NativeMethods.MQMgmtGetInfo(Environment.MachineName, "QUEUE=" + queueFormatName, queueProperties);
+            uint returnCode = MsmqNativeMethods.MQMgmtGetInfo(Environment.MachineName, "QUEUE=" + queueFormatName, queueProperties);
 
             aPropId.Free();
             aPropVar.Free();
 
-            if (returnCode == NativeMethods.MQ_ERROR.QUEUE_NOT_ACTIVE)
+            if (returnCode == MsmqNativeMethods.MQ_ERROR.QUEUE_NOT_ACTIVE)
             {
                 return 0;
             }
