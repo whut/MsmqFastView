@@ -32,12 +32,12 @@
 
             <Button Grid.Column="1" Command="{Binding PurgeAll}" Content="Purge all queues and subqueues (F9)" />
         </Grid>
-        
+
         <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding ShowOnlyNonEmpty}" Command="{Binding Refresh}" Content="Show only non-empty queues" Margin="1" />
 
         <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding LastRefresh}" Margin="1" TextAlignment="Center" />
 
-        <ScrollViewer Grid.Row="2" Grid.Column="0">
+        <ScrollViewer Grid.Row="2" Grid.Column="0" VerticalScrollBarVisibility="Auto">
             <ListBox x:Name="QueuesListBox" Width="300" ItemsSource="{Binding Queues}" IsSynchronizedWithCurrentItem="True">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -51,23 +51,25 @@
             </ListBox>
         </ScrollViewer>
 
-        <DataGrid Grid.Row="2" Grid.Column="1" ItemsSource="{Binding ElementName=QueuesListBox, Path=SelectedItem.Messages}" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Label" Binding="{Binding Label}" />
-                <DataGridTextColumn Header="Sent" Binding="{Binding Sent}" />
-                <DataGridTextColumn Header="Response queue" Binding="{Binding ResponseQueue}" />
-                <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
-            </DataGrid.Columns>
+        <ScrollViewer Grid.Row="2" Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <DataGrid ItemsSource="{Binding ElementName=QueuesListBox, Path=SelectedItem.Messages}" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Label" Binding="{Binding Label}" />
+                    <DataGridTextColumn Header="Sent" Binding="{Binding Sent}" />
+                    <DataGridTextColumn Header="Response queue" Binding="{Binding ResponseQueue}" />
+                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
+                </DataGrid.Columns>
 
-            <DataGrid.RowDetailsTemplate>
-                <DataTemplate>
-                    <StackPanel>
-                        <TextBlock Text="{Binding Details.CorrelationId}" />
-                        <TextBlock Text="{Binding Details.Body}" />
-                    </StackPanel>
-                </DataTemplate>
-            </DataGrid.RowDetailsTemplate>
-        </DataGrid>
+                <DataGrid.RowDetailsTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Details.CorrelationId}" />
+                            <TextBlock Text="{Binding Details.Body}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </DataGrid.RowDetailsTemplate>
+            </DataGrid>
+        </ScrollViewer>
 
         <StatusBar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
             <StatusBarItem DockPanel.Dock="Right">

@@ -5,7 +5,7 @@
  - fail on binding errors -> http://www.jasonbock.net/jb/Default.aspx?blog=entry.0f221e047de740ee90722b248933a28d
  - bigger font
  - grey details background
- - scrollbars
+ - resize (horizontally) queues list
  - copy to clipboard
  - deleting queues
  - tree-like view of queues
