@@ -37,7 +37,7 @@ namespace MsmqFastView
             : this()
         {
             this.path = queue.Path;
-            this.Name = GetFriendlyName(this.path);
+            this.Name = GetFriendlyName(queue);
             List<QueueModel> subqueues = new List<QueueModel>();
             if (queue.GetNumberOfSubqueues() > 0)
             {
@@ -77,15 +77,15 @@ namespace MsmqFastView
 
         public ICommand Purge { get; private set; }
 
-        private static string GetFriendlyName(string queuePath)
+        private static string GetFriendlyName(MessageQueue queue)
         {
-            string prefix = "FORMATNAME:DIRECT=OS:" + Environment.MachineName + "\\private$\\";
-            if (queuePath.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            string prefix = "private$\\";
+            if (queue.QueueName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
             {
-                return queuePath.Substring(prefix.Length);
+                return queue.QueueName.Substring(prefix.Length);
             }
 
-            return queuePath;
+            return queue.QueueName;
         }
 
         private void InitMessages()
@@ -101,6 +101,7 @@ namespace MsmqFastView
                         messageQueue.MessageReadPropertyFilter.Label = true;
                         messageQueue.MessageReadPropertyFilter.SentTime = true;
                         messageQueue.MessageReadPropertyFilter.ResponseQueue = true;
+                        messageQueue.MessageReadPropertyFilter.CorrelationId = true;
 
                         this.messages = messageQueue
                             .Cast<Message>()
@@ -110,7 +111,8 @@ namespace MsmqFastView
                                 m.Id,
                                 m.Label,
                                 m.SentTime,
-                                m.ResponseQueue != null ? GetFriendlyName(m.ResponseQueue.Path) : string.Empty))
+                                m.ResponseQueue != null ? GetFriendlyName(m.ResponseQueue) : string.Empty,
+                                m.CorrelationId))
                             .ToList();
                     }
                 }

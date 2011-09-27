@@ -8,15 +8,16 @@ namespace MsmqFastView
     {
         private string queuePath;
 
-        private MessageDetailsModel details;
+        private string body;
 
-        public MessageModel(string queuePath, string id, string label, DateTime sent, string responseQueue)
+        public MessageModel(string queuePath, string id, string label, DateTime sent, string responseQueue, string correlationId)
         {
             this.queuePath = queuePath;
             this.Id = id;
             this.Label = label;
             this.Sent = sent;
             this.ResponseQueue = responseQueue;
+            this.CorrelationId = correlationId;
         }
 
         public string Id { get; private set; }
@@ -27,40 +28,37 @@ namespace MsmqFastView
 
         public string ResponseQueue { get; private set; }
 
-        public MessageDetailsModel Details
+        public string CorrelationId { get; private set; }
+
+        public string Body
         {
             get
             {
-                this.InitDetails();
+                this.InitBody();
 
-                return this.details;
+                return this.body;
             }
         }
 
-        private void InitDetails()
+        private void InitBody()
         {
-            if (this.details == null)
+            if (this.body == null)
             {
                 using (var messageQueue = new MessageQueue(this.queuePath))
                 {
                     messageQueue.MessageReadPropertyFilter.ClearAll();
                     messageQueue.MessageReadPropertyFilter.Body = true;
-                    messageQueue.MessageReadPropertyFilter.CorrelationId = true;
 
                     try
                     {
                         using (var message = messageQueue.PeekById(this.Id))
                         {
-                            this.details = new MessageDetailsModel(
-                                new StreamReader(message.BodyStream).ReadToEnd(),
-                                message.CorrelationId);
+                            this.body = new StreamReader(message.BodyStream).ReadToEnd();
                         }
                     }
                     catch (InvalidOperationException)
                     {
-                        this.details = new MessageDetailsModel(
-                            "No message with the id " + this.Id + " exists. Probably it was consumed few moments ago.",
-                            string.Empty);
+                        this.body = "No message with the id " + this.Id + " exists. Probably it was consumed few moments ago.";
                     }
                 }
             }

@@ -64,7 +64,6 @@
     <Compile Include="Infrastructure\WindowExtensions.cs" />
     <Compile Include="Infrastructure\WindowNativeMethods.cs" />
     <Compile Include="MainWindowModel.cs" />
-    <Compile Include="MessageDetailsModel.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

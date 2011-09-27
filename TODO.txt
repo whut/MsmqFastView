@@ -10,3 +10,5 @@
  - deleting queues
  - tree-like view of queues
  - saving grid splitter, checkbox values
+ - better performance when showing queue with large number of messages
+ - scrollbar at bottom
