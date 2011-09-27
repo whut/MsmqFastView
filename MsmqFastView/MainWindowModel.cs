@@ -82,11 +82,10 @@ namespace MsmqFastView
                 try
                 {
                     foreach (MessageQueue queue in MessageQueue.GetPrivateQueuesByMachine(Environment.MachineName)
-                        .OrderBy(mq => mq.QueueName)
-                        .SelectMany(q => this.GetQueueWithSubQueues(q)))
+                        .Where(q => !this.ShowOnlyNonEmpty || q.GetNumberOfMessages() != 0)
+                        .OrderBy(mq => mq.QueueName))
                     {
-                        this.queues.Add(new QueueModel(
-                            queue.Path));
+                        this.queues.Add(new QueueModel(queue));
                     }
                 }
                 catch (Exception ex)

@@ -11,16 +11,12 @@ namespace MsmqFastView
 {
     public class QueueModel : INotifyPropertyChanged
     {
-        private const string PathPrefix = "FORMATNAME:DIRECT=OS:";
-
         private string path;
 
         private List<MessageModel> messages;
 
-        public QueueModel(string path)
+        private QueueModel()
         {
-            this.path = path;
-            this.Name = GetFriendlyName(path);
             this.Refresh = new DelegateCommand(o =>
             {
                 this.messages = null;
@@ -37,6 +33,30 @@ namespace MsmqFastView
             });
         }
 
+        public QueueModel(MessageQueue queue)
+            : this()
+        {
+            this.path = queue.Path;
+            this.Name = GetFriendlyName(this.path);
+            List<QueueModel> subqueues = new List<QueueModel>();
+            if (queue.GetNumberOfSubqueues() > 0)
+            {
+                foreach (string subQueueName in queue.GetSubqueueNames())
+                {
+                    subqueues.Add(new QueueModel(queue, subQueueName));
+                }
+            }
+
+            this.SubQueues = subqueues;
+        }
+
+        public QueueModel(MessageQueue queue, string subQueueName)
+            : this()
+        {
+            this.path = queue.Path + ";" + subQueueName;
+            this.Name = subQueueName;
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string Name { get; private set; }
@@ -51,15 +71,18 @@ namespace MsmqFastView
             }
         }
 
+        public IEnumerable<QueueModel> SubQueues { get; set; }
+
         public ICommand Refresh { get; private set; }
 
         public ICommand Purge { get; private set; }
 
         private static string GetFriendlyName(string queuePath)
         {
-            if (queuePath.StartsWith(PathPrefix, StringComparison.OrdinalIgnoreCase))
+            string prefix = "FORMATNAME:DIRECT=OS:" + Environment.MachineName + "\\private$\\";
+            if (queuePath.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
             {
-                return queuePath.Substring(PathPrefix.Length);
+                return queuePath.Substring(prefix.Length);
             }
 
             return queuePath;

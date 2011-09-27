@@ -38,40 +38,51 @@
         <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding LastRefresh}" Margin="1" TextAlignment="Center" />
 
         <ScrollViewer Grid.Row="2" Grid.Column="0" VerticalScrollBarVisibility="Auto">
-            <ListBox x:Name="QueuesListBox" HorizontalContentAlignment="Stretch" ItemsSource="{Binding Queues}" IsSynchronizedWithCurrentItem="True">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <DockPanel>
-                            <Button DockPanel.Dock="Left" Margin="1" Command="{Binding Refresh}" Content="R" Width="20" ToolTip="Refresh messages from this queue" />
-                            <Button DockPanel.Dock="Right" Margin="1" Command="{Binding Purge}" Content="P" Width="20" ToolTip="Purge messages from this queue" />
-                            <TextBlock Margin="1" Text="{Binding Name}" />
-                        </DockPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <TreeView x:Name="QueuesTreeView" ItemsSource="{Binding Queues}">
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="TreeViewItem">
+                        <Setter Property="IsExpanded" Value="True" />
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding SubQueues}">
+                        <TextBlock Margin="1" Text="{Binding Name}" />
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
         </ScrollViewer>
 
         <GridSplitter Grid.Column="0" Grid.Row="2" Width="1" HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
 
-        <ScrollViewer Grid.Row="2" Grid.Column="1" VerticalScrollBarVisibility="Auto">
-            <DataGrid ItemsSource="{Binding ElementName=QueuesListBox, Path=SelectedItem.Messages}" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Label" Binding="{Binding Label}" />
-                    <DataGridTextColumn Header="Sent" Binding="{Binding Sent}" />
-                    <DataGridTextColumn Header="Response queue" Binding="{Binding ResponseQueue}" />
-                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
-                </DataGrid.Columns>
+        <StackPanel  Grid.Row="2" Grid.Column="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Command="{Binding SelectedItem.Refresh, ElementName=QueuesTreeView}" Content="Refresh this queue" />
+                <Button Grid.Column="1" Command="{Binding SelectedItem.Purge, ElementName=QueuesTreeView}" Content="Purge this queue" />
+            </Grid>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <DataGrid ItemsSource="{Binding ElementName=QueuesTreeView, Path=SelectedItem.Messages}" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Label" Binding="{Binding Label}" />
+                        <DataGridTextColumn Header="Sent" Binding="{Binding Sent}" />
+                        <DataGridTextColumn Header="Response queue" Binding="{Binding ResponseQueue}" />
+                        <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
+                    </DataGrid.Columns>
 
-                <DataGrid.RowDetailsTemplate>
-                    <DataTemplate>
-                        <StackPanel>
-                            <TextBlock Text="{Binding Details.CorrelationId}" />
-                            <TextBlock Text="{Binding Details.Body}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </DataGrid.RowDetailsTemplate>
-            </DataGrid>
-        </ScrollViewer>
+                    <DataGrid.RowDetailsTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Details.CorrelationId}" />
+                                <TextBlock Text="{Binding Details.Body}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGrid.RowDetailsTemplate>
+                </DataGrid>
+            </ScrollViewer>
+        </StackPanel>
 
         <StatusBar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
             <StatusBarItem DockPanel.Dock="Right">

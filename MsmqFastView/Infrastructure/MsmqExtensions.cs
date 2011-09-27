@@ -16,6 +16,12 @@ namespace MsmqFastView.Infrastructure
             return GetSubqueueNames(messageQueue.FormatName);
         }
 
+        /// <summary>
+        /// Returns numer of messages in given queue (including messages in subqueues).
+        /// When given subqueue throws exception.
+        /// </summary>
+        /// <param name="messageQueue">The queue.</param>
+        /// <returns>Number of messages.</returns>
         public static int GetNumberOfMessages(this MessageQueue messageQueue)
         {
             return GetNumberOfMessages(messageQueue.FormatName);
