@@ -9,3 +9,4 @@
  - copy to clipboard
  - deleting queues
  - tree-like view of queues
+ - saving grid splitter, checkbox values
