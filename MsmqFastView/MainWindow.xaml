@@ -35,7 +35,11 @@
 
         <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding ShowOnlyNonEmpty}" Command="{Binding Refresh}" Content="Show only non-empty queues" Margin="1" />
 
-        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding LastRefresh}" Margin="1" TextAlignment="Center" />
+
+        <TextBlock Grid.Row="1" Grid.Column="1" Margin="1" TextAlignment="Right">
+            <Span>Last refresh: </Span>
+            <Run Text="{Binding LastRefresh, Mode=OneWay}" />
+        </TextBlock>
 
         <ScrollViewer Grid.Row="2" Grid.Column="0" VerticalScrollBarVisibility="Auto">
             <TreeView x:Name="QueuesTreeView" ItemsSource="{Binding Queues}">
@@ -90,10 +94,14 @@
 
         <StatusBar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
             <StatusBarItem DockPanel.Dock="Right">
-                <Binding Path="ApplicationVersion" />
+                <TextBlock>
+                    <Span>Version: </Span>
+                    <Run Text="{Binding Path=ApplicationVersion, Mode=OneWay}" />
+                </TextBlock>
             </StatusBarItem>
             <StatusBarItem>
                 <TextBlock>
+                    <Span>Homepage: </Span>
                     <Hyperlink Command="{Binding OpenHomePage}">https://github.com/whut/MsmqFastView</Hyperlink>
                 </TextBlock>
             </StatusBarItem>
