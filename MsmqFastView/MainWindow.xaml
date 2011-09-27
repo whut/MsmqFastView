@@ -54,8 +54,12 @@
 
         <GridSplitter Grid.Column="0" Grid.Row="2" Width="1" HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
 
-        <StackPanel  Grid.Row="2" Grid.Column="1" VerticalAlignment="Stretch">
-            <Grid>
+        <Grid  Grid.Row="2" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="23" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
@@ -63,7 +67,7 @@
                 <Button Grid.Column="0" Command="{Binding SelectedItem.Refresh, ElementName=QueuesTreeView}" Content="Refresh this queue" />
                 <Button Grid.Column="1" Command="{Binding SelectedItem.Purge, ElementName=QueuesTreeView}" Content="Purge this queue" />
             </Grid>
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                 <DataGrid ItemsSource="{Binding ElementName=QueuesTreeView, Path=SelectedItem.Messages}" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Label" Binding="{Binding Label}" />
@@ -82,7 +86,7 @@
                     </DataGrid.RowDetailsTemplate>
                 </DataGrid>
             </ScrollViewer>
-        </StackPanel>
+        </Grid>
 
         <StatusBar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
             <StatusBarItem DockPanel.Dock="Right">
