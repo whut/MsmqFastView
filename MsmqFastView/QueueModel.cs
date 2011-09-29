@@ -15,24 +15,6 @@ namespace MsmqFastView
 
         private List<MessageModel> messages;
 
-        private QueueModel()
-        {
-            this.Refresh = new DelegateCommand(o =>
-            {
-                this.messages = null;
-                this.PropertyChanged.Raise(this, "Messages");
-            });
-            this.Purge = new DelegateCommand(o =>
-            {
-                using (var messageQueue = new MessageQueue(this.path))
-                {
-                    messageQueue.Purge();
-                }
-
-                this.Refresh.Execute(o);
-            });
-        }
-
         public QueueModel(MessageQueue queue)
             : this()
         {
@@ -55,6 +37,24 @@ namespace MsmqFastView
         {
             this.path = queue.Path + ";" + subQueueName;
             this.Name = subQueueName;
+        }
+
+        private QueueModel()
+        {
+            this.Refresh = new DelegateCommand(o =>
+            {
+                this.messages = null;
+                this.PropertyChanged.Raise(this, "Messages");
+            });
+            this.Purge = new DelegateCommand(o =>
+            {
+                using (var messageQueue = new MessageQueue(this.path))
+                {
+                    messageQueue.Purge();
+                }
+
+                this.Refresh.Execute(o);
+            });
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
