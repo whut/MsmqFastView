@@ -9,7 +9,6 @@
  - deleting queues
  - saving grid splitter position and checkbox value to settings
  - better performance when showing queue with large number of messages
- - icon
  - purge only visible messages ?
  - last refresh date for queue
  - shortcuts for "Refresh/Purge this queue"
