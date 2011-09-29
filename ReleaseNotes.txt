@@ -1,0 +1,20 @@
+MsmqFastView 0.2.0 2011-09-29 "The UI King"
+ - status bar with url and application version
+ - error handling when reading queues list and messages
+ - better looking message boxes
+ - saving window size and position
+ - scroll for messages list
+ - show scrollbars only when needed
+ - resizing queues list
+ - showing subqueues as tree
+ - nicer friendly queue name
+
+MsmqFastView  0.1.0  2011-07-04  "The Bootstrapper"
+ - showe queues, subqueues and messages
+ - refresh queues list
+ - last refresh date
+ - purge all queues
+ - refresh messages from one queue
+ - purge messages from one queue
+ - error handling when receiving body of already consumed message
+ - option "Show only non-empty queues"
