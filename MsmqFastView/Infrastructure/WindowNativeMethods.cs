@@ -6,6 +6,8 @@ namespace MsmqFastView.Infrastructure
     public static class WindowNativeMethods
     {
         [DllImport("User32.dll")]
+
+        [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
 
         [DllImport("User32.dll")]

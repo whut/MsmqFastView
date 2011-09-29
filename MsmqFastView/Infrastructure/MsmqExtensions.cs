@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Messaging;
 using System.Runtime.InteropServices;
 
@@ -59,7 +60,7 @@ namespace MsmqFastView.Infrastructure
                 return 0;
             }
 
-            MsmqException.Assert(returnCode == 0, string.Format("MQMgmtGetInfo returned error: {0:x8}", returnCode));
+            MsmqException.Assert(returnCode == 0, string.Format(CultureInfo.InvariantCulture, "MQMgmtGetInfo returned error: {0:x8}", returnCode));
             MsmqException.Assert(((VarEnum)propertyValues[0].vt) == VarEnum.VT_UI4, "Unexpected type returned, should be " + VarEnum.VT_UI4 + ", but was " + ((VarEnum)propertyValues[0].vt) + ".");
 
             return (int)propertyValues[0].union.ulVal;
@@ -97,7 +98,7 @@ namespace MsmqFastView.Infrastructure
                 return new string[0];
             }
 
-            MsmqException.Assert(returnCode == 0, string.Format("MQMgmtGetInfo returned error: {0:x8}", returnCode));
+            MsmqException.Assert(returnCode == 0, string.Format(CultureInfo.InvariantCulture, "MQMgmtGetInfo returned error: {0:x8}", returnCode));
             MsmqException.Assert(propertyValues[0].vt == (short)(VarEnum.VT_VECTOR | VarEnum.VT_LPWSTR), "Unexpected type returned, should be " + (VarEnum.VT_VECTOR | VarEnum.VT_LPWSTR) + ", but was " + ((VarEnum)propertyValues[0].vt) + ".");
 
             IntPtr[] elems = new IntPtr[propertyValues[0].union.calpwstr.cElems];
@@ -147,7 +148,7 @@ namespace MsmqFastView.Infrastructure
                 return 0;
             }
 
-            MsmqException.Assert(returnCode == 0, string.Format("MQMgmtGetInfo returned error: {0:x8}", returnCode));
+            MsmqException.Assert(returnCode == 0, string.Format(CultureInfo.InvariantCulture, "MQMgmtGetInfo returned error: {0:x8}", returnCode));
             MsmqException.Assert(((VarEnum)propertyValues[0].vt) == VarEnum.VT_UI4, "Unexpected type returned, should be " + VarEnum.VT_UI4 + ", but was " + ((VarEnum)propertyValues[0].vt) + ".");
 
             return (int)propertyValues[0].union.ulVal;

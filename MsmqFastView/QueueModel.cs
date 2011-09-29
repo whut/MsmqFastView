@@ -61,7 +61,7 @@ namespace MsmqFastView
 
         public string Name { get; private set; }
 
-        public List<MessageModel> Messages
+        public IEnumerable<MessageModel> Messages
         {
             get
             {

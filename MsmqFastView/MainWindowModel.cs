@@ -17,7 +17,7 @@ namespace MsmqFastView
         public MainWindowModel()
         {
             this.ApplicationVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            this.ShowOnlyNonEmpty = true;
+            this.ShowOnlyNonempty = true;
             this.Refresh = new DelegateCommand(o =>
             {
                 this.queues = null;
@@ -42,7 +42,7 @@ namespace MsmqFastView
 
                 this.Refresh.Execute(o);
             });
-            this.OpenHomePage = new DelegateCommand(o =>
+            this.OpenHomepage = new DelegateCommand(o =>
             {
                 Process.Start("https://github.com/whut/MsmqFastView");
             });
@@ -50,13 +50,13 @@ namespace MsmqFastView
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public bool ShowOnlyNonEmpty { get; set; }
+        public bool ShowOnlyNonempty { get; set; }
 
         public DateTime LastRefresh { get; private set; }
 
         public string ApplicationVersion { get; private set; }
 
-        public List<QueueModel> Queues
+        public IEnumerable<QueueModel> Queues
         {
             get
             {
@@ -72,7 +72,7 @@ namespace MsmqFastView
 
         public ICommand PurgeAll { get; private set; }
 
-        public ICommand OpenHomePage { get; private set; }
+        public ICommand OpenHomepage { get; private set; }
 
         private void InitializeQueues()
         {
@@ -82,7 +82,7 @@ namespace MsmqFastView
                 try
                 {
                     foreach (MessageQueue queue in MessageQueue.GetPrivateQueuesByMachine(Environment.MachineName)
-                        .Where(q => !this.ShowOnlyNonEmpty || q.GetNumberOfMessages() != 0)
+                        .Where(q => !this.ShowOnlyNonempty || q.GetNumberOfMessages() != 0)
                         .OrderBy(mq => mq.QueueName))
                     {
                         this.queues.Add(new QueueModel(queue));
@@ -111,7 +111,7 @@ namespace MsmqFastView
 
         private IEnumerable<MessageQueue> GetQueueWithSubQueues(MessageQueue queue)
         {
-            if (this.ShowOnlyNonEmpty && queue.GetNumberOfMessages() == 0)
+            if (this.ShowOnlyNonempty && queue.GetNumberOfMessages() == 0)
             {
                 yield break;
             }

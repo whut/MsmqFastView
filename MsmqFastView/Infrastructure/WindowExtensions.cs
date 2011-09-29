@@ -19,7 +19,7 @@ namespace MsmqFastView.Infrastructure
 
             if (!success)
             {
-                throw new InvalidOperationException("Geting window placement failed.");
+                throw new InvalidOperationException("Getting window placement failed.");
             }
 
             return windowPlacement;

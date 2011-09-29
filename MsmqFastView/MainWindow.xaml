@@ -33,7 +33,7 @@
             <Button Grid.Column="1" Command="{Binding PurgeAll}" Content="Purge all queues and subqueues (F9)" />
         </Grid>
 
-        <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding ShowOnlyNonEmpty}" Command="{Binding Refresh}" Content="Show only non-empty queues" Margin="1" />
+        <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding ShowOnlyNonempty}" Command="{Binding Refresh}" Content="Show only nonempty queues" Margin="1" />
 
 
         <TextBlock Grid.Row="1" Grid.Column="1" Margin="1" TextAlignment="Right">
@@ -102,7 +102,7 @@
             <StatusBarItem>
                 <TextBlock>
                     <Span>Homepage: </Span>
-                    <Hyperlink Command="{Binding OpenHomePage}">https://github.com/whut/MsmqFastView</Hyperlink>
+                    <Hyperlink Command="{Binding OpenHomepage}">https://github.com/whut/MsmqFastView</Hyperlink>
                 </TextBlock>
             </StatusBarItem>
         </StatusBar>
