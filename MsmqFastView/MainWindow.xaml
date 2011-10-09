@@ -4,8 +4,10 @@
         Title="MainWindow" Height="600" Width="800">
     <Window.InputBindings>
         <KeyBinding Key="F5" Command="{Binding Refresh}" />
+        <KeyBinding Key="F6" Command="{Binding SelectedItem.Refresh, ElementName=QueuesTreeView}" />
         <KeyBinding Key="F8" Command="{Binding Purge}" />
         <KeyBinding Key="F9" Command="{Binding PurgeAll}" />
+        <KeyBinding Key="F10" Command="{Binding SelectedItem.Purge, ElementName=QueuesTreeView}" />
     </Window.InputBindings>
 
     <Grid>
@@ -69,8 +71,8 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <Button Grid.Column="0" Command="{Binding SelectedItem.Refresh, ElementName=QueuesTreeView}" Content="Refresh this queue" />
-                <Button Grid.Column="1" Command="{Binding SelectedItem.Purge, ElementName=QueuesTreeView}" Content="Purge this queue" />
+                <Button Grid.Column="0" Command="{Binding SelectedItem.Refresh, ElementName=QueuesTreeView}" Content="Refresh this queue (F6)" />
+                <Button Grid.Column="1" Command="{Binding SelectedItem.Purge, ElementName=QueuesTreeView}" Content="Purge this queue (F10)" />
             </Grid>
 
             <DataGrid Grid.Row="1" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding ElementName=QueuesTreeView, Path=SelectedItem.Messages}" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" HeadersVisibility="Column">
