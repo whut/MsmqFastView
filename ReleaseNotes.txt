@@ -1,3 +1,11 @@
+MsmqFastView 0.3.0 2011-10-09 "Agile Viewer"
+ - added application icon
+ - added extensibility point to add additional message details
+ - added showing Rhino Service Bus specific message details (id, type, timeout, custom headers)
+ - fixed horizontal scrollbar of message list
+ - ability to select, copy and paste message body
+ - shortkeys for "Refresh/Purge this queue"
+
 MsmqFastView 0.2.0 2011-09-29 "The UI King"
  - status bar with url and application version
  - error handling when reading queues list and messages
@@ -18,3 +26,4 @@ MsmqFastView  0.1.0  2011-07-04  "The Bootstrapper"
  - purge messages from one queue
  - error handling when receiving body of already consumed message
  - option "Show only non-empty queues"
+ - shortkeys for "Refresh queues list", "Purge all queues", "Purge all queues and subqueues"
