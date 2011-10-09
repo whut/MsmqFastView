@@ -92,7 +92,7 @@
                                 </CollectionViewSource>
                             </StackPanel.Resources>
                             <TextBlock Text="Body" Background="LightGray" />
-                            <TextBlock Text="{Binding Details.Body}" Margin="5 0 0 0" />
+                            <TextBox Text="{Binding Details.Body, Mode=OneTime}" IsReadOnly="True" Margin="5 0 0 0" />
                             <ItemsControl ItemsSource="{Binding Source={StaticResource AdditionalDetails}}" Grid.IsSharedSizeScope="True">
                                 <ItemsControl.GroupStyle>
                                     <GroupStyle>
