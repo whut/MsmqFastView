@@ -98,8 +98,6 @@ namespace MsmqFastView
                         "Error during reading queues",
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
-
-                    throw;
                 }
                 finally
                 {

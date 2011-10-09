@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Messaging;
 
 namespace MsmqFastView
 {
@@ -8,7 +6,7 @@ namespace MsmqFastView
     {
         private string queuePath;
 
-        private string body;
+        private MessageDetailsModel details;
 
         public MessageModel(string queuePath, string id, string label, DateTime sent, string responseQueue, string correlationId)
         {
@@ -30,37 +28,16 @@ namespace MsmqFastView
 
         public string CorrelationId { get; private set; }
 
-        public string Body
+        public MessageDetailsModel Details
         {
             get
             {
-                this.InitBody();
-
-                return this.body;
-            }
-        }
-
-        private void InitBody()
-        {
-            if (this.body == null)
-            {
-                using (var messageQueue = new MessageQueue(this.queuePath))
+                if (this.details == null)
                 {
-                    messageQueue.MessageReadPropertyFilter.ClearAll();
-                    messageQueue.MessageReadPropertyFilter.Body = true;
-
-                    try
-                    {
-                        using (var message = messageQueue.PeekById(this.Id))
-                        {
-                            this.body = new StreamReader(message.BodyStream).ReadToEnd();
-                        }
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        this.body = "No message with the id " + this.Id + " exists. Probably it was consumed few moments ago.";
-                    }
+                    this.details = new MessageDetailsModel(this.Id, this.queuePath);
                 }
+
+                return this.details;
             }
         }
     }

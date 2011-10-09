@@ -13,7 +13,6 @@
             <ColumnDefinition Width="300" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="23" />
             <RowDefinition Height="23" />
@@ -28,8 +27,8 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Command="{Binding Purge}" Content="Purge all queues (F8)" />
 
+            <Button Grid.Column="0" Command="{Binding Purge}" Content="Purge all queues (F8)" />
             <Button Grid.Column="1" Command="{Binding PurgeAll}" Content="Purge all queues and subqueues (F9)" />
         </Grid>
 
@@ -56,40 +55,72 @@
             </TreeView>
         </ScrollViewer>
 
-        <GridSplitter Grid.Column="0" Grid.Row="2" Width="1" HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
+        <GridSplitter Grid.Row="2" Grid.Column="0" Width="1" HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
 
         <Grid  Grid.Row="2" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="23" />
                 <RowDefinition />
             </Grid.RowDefinitions>
+
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
+
                 <Button Grid.Column="0" Command="{Binding SelectedItem.Refresh, ElementName=QueuesTreeView}" Content="Refresh this queue" />
                 <Button Grid.Column="1" Command="{Binding SelectedItem.Purge, ElementName=QueuesTreeView}" Content="Purge this queue" />
             </Grid>
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                <DataGrid ItemsSource="{Binding ElementName=QueuesTreeView, Path=SelectedItem.Messages}" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Label" Binding="{Binding Label}" />
-                        <DataGridTextColumn Header="Sent" Binding="{Binding Sent}" />
-                        <DataGridTextColumn Header="Response queue" Binding="{Binding ResponseQueue}" />
-                        <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
-                        <DataGridTextColumn Header="Correlation Id" Binding="{Binding CorrelationId}" />
-                    </DataGrid.Columns>
 
-                    <DataGrid.RowDetailsTemplate>
-                        <DataTemplate>
-                            <StackPanel>
-                                <TextBlock Text="{Binding Body}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGrid.RowDetailsTemplate>
-                </DataGrid>
-            </ScrollViewer>
+            <DataGrid Grid.Row="1" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding ElementName=QueuesTreeView, Path=SelectedItem.Messages}" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Label" Binding="{Binding Label}" />
+                    <DataGridTextColumn Header="Sent" Binding="{Binding Sent}" />
+                    <DataGridTextColumn Header="Response queue" Binding="{Binding ResponseQueue}" />
+                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
+                    <DataGridTextColumn Header="Correlation Id" Binding="{Binding CorrelationId}" />
+                </DataGrid.Columns>
+                <DataGrid.RowDetailsTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <StackPanel.Resources>
+                                <CollectionViewSource Source="{Binding Details.AdditionalDetails}" x:Key="AdditionalDetails">
+                                    <CollectionViewSource.GroupDescriptions>
+                                        <PropertyGroupDescription PropertyName="Group" />
+                                    </CollectionViewSource.GroupDescriptions>
+                                </CollectionViewSource>
+                            </StackPanel.Resources>
+                            <TextBlock Text="Body" Background="LightGray" />
+                            <TextBlock Text="{Binding Details.Body}" Margin="5 0 0 0" />
+                            <ItemsControl ItemsSource="{Binding Source={StaticResource AdditionalDetails}}" Grid.IsSharedSizeScope="True">
+                                <ItemsControl.GroupStyle>
+                                    <GroupStyle>
+                                        <GroupStyle.HeaderTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Name}" Background="LightGray" />
+                                            </DataTemplate>
+                                        </GroupStyle.HeaderTemplate>
+                                    </GroupStyle>
+                                </ItemsControl.GroupStyle>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition SharedSizeGroup="MessageDetailNameGroup" />
+                                                <ColumnDefinition SharedSizeGroup="MessageDetailValueGroup" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0" Text="{Binding Name}" Margin="1" />
+                                            <TextBlock Grid.Column="1" Text="{Binding Value}" Margin="1" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </DataTemplate>
+                </DataGrid.RowDetailsTemplate>
+            </DataGrid>
         </Grid>
 
         <StatusBar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">

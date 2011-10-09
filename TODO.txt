@@ -5,7 +5,7 @@
  - fail on binding errors -> http://www.jasonbock.net/jb/Default.aspx?blog=entry.0f221e047de740ee90722b248933a28d
  - bigger font
  - grey details background
- - copy to clipboard
+ - copy to clipboard or not editable textboxes
  - deleting queues
  - saving grid splitter position and checkbox value to settings
  - better performance when showing queue with large number of messages
@@ -13,3 +13,7 @@
  - last refresh date for queue
  - shortcuts for "Refresh/Purge this queue"
  - last refresh date in status bar
+ - build script
+ - disable "Refresh/Purge this queue" by default, to have them disabled before selecting queue
+ - support for older MSMQ or add to readme that minimal Windows version is 7 and .NET 4
+ - config option to disable RSB integration

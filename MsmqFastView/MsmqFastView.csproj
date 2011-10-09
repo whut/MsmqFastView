@@ -60,6 +60,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Extensions\IMessageExtension.cs" />
+    <Compile Include="Extensions\MessageExtensions.cs" />
+    <Compile Include="Extensions\RhinoServiceBusMessageExtension.cs" />
     <Compile Include="Infrastructure\MsmqException.cs" />
     <Compile Include="Infrastructure\MsmqNativeMethods.cs" />
     <Compile Include="Infrastructure\NotifyPropertyChangedExtensions.cs" />
@@ -67,6 +70,8 @@
     <Compile Include="Infrastructure\WindowExtensions.cs" />
     <Compile Include="Infrastructure\WindowNativeMethods.cs" />
     <Compile Include="MainWindowModel.cs" />
+    <Compile Include="Extensions\MessageDetail.cs" />
+    <Compile Include="MessageDetailsModel.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

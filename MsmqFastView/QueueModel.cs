@@ -121,15 +121,13 @@ namespace MsmqFastView
                     this.messages = new List<MessageModel>();
 
                     MessageBox.Show(
-                        "Error during reading messages. Try refreshing messages list.\n"
+                        "Error during reading messages. Try refreshing queues list.\n"
                         + "\n"
                         + "Details:\n"
                         + ex.ToString(),
                         "Error during reading messages",
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
-
-                    throw;
                 }
             }
         }
