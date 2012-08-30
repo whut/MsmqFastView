@@ -18,6 +18,7 @@ namespace MsmqFastView
         {
             this.ApplicationVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             this.ShowOnlyNonempty = true;
+            this.MachineName = Environment.MachineName;
             this.Refresh = new DelegateCommand(o =>
             {
                 this.queues = null;
@@ -25,7 +26,7 @@ namespace MsmqFastView
             });
             this.Purge = new DelegateCommand(o =>
             {
-                foreach (MessageQueue queue in MessageQueue.GetPrivateQueuesByMachine(Environment.MachineName))
+                foreach (MessageQueue queue in MessageQueue.GetPrivateQueuesByMachine(this.MachineName))
                 {
                     queue.Purge();
                 }
@@ -34,7 +35,7 @@ namespace MsmqFastView
             });
             this.PurgeAll = new DelegateCommand(o =>
             {
-                foreach (MessageQueue queue in MessageQueue.GetPrivateQueuesByMachine(Environment.MachineName)
+                foreach (MessageQueue queue in MessageQueue.GetPrivateQueuesByMachine(this.MachineName)
                     .SelectMany(q => GetQueueWithSubQueues(q)))
                 {
                     queue.Purge();
@@ -55,6 +56,16 @@ namespace MsmqFastView
         public DateTime LastRefresh { get; private set; }
 
         public string ApplicationVersion { get; private set; }
+
+        public string MachineName { get; private set; }
+
+        public string Title
+        {
+            get
+            {
+                return "MsmqFastView - " + this.MachineName;
+            }
+        }
 
         public IEnumerable<QueueModel> Queues
         {
@@ -81,7 +92,7 @@ namespace MsmqFastView
                 this.queues = new List<QueueModel>();
                 try
                 {
-                    foreach (MessageQueue queue in MessageQueue.GetPrivateQueuesByMachine(Environment.MachineName)
+                    foreach (MessageQueue queue in MessageQueue.GetPrivateQueuesByMachine(this.MachineName)
                         .Where(q => !this.ShowOnlyNonempty || q.GetNumberOfMessages() != 0)
                         .OrderBy(mq => mq.QueueName))
                     {

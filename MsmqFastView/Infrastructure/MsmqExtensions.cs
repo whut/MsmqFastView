@@ -9,12 +9,12 @@ namespace MsmqFastView.Infrastructure
     {
         public static int GetNumberOfSubqueues(this MessageQueue messageQueue)
         {
-            return GetNumberOfSubqueues(messageQueue.FormatName);
+            return GetNumberOfSubqueues(messageQueue.MachineName, messageQueue.FormatName);
         }
 
         public static string[] GetSubqueueNames(this MessageQueue messageQueue)
         {
-            return GetSubqueueNames(messageQueue.FormatName);
+            return GetSubqueueNames(messageQueue.MachineName, messageQueue.FormatName);
         }
 
         /// <summary>
@@ -25,10 +25,10 @@ namespace MsmqFastView.Infrastructure
         /// <returns>Number of messages.</returns>
         public static int GetNumberOfMessages(this MessageQueue messageQueue)
         {
-            return GetNumberOfMessages(messageQueue.FormatName);
+            return GetNumberOfMessages(messageQueue.MachineName, messageQueue.FormatName);
         }
 
-        public static int GetNumberOfSubqueues(string queueFormatName)
+        public static int GetNumberOfSubqueues(string machineName, string queueFormatName)
         {
             int[] propertyIds = new int[1] 
             {
@@ -50,7 +50,7 @@ namespace MsmqFastView.Infrastructure
                 aStatus = IntPtr.Zero
             };
 
-            uint returnCode = MsmqNativeMethods.MQMgmtGetInfo(Environment.MachineName, "QUEUE=" + queueFormatName, queueProperties);
+            uint returnCode = MsmqNativeMethods.MQMgmtGetInfo(machineName, "QUEUE=" + queueFormatName, queueProperties);
 
             aPropId.Free();
             aPropVar.Free();
@@ -66,7 +66,7 @@ namespace MsmqFastView.Infrastructure
             return (int)propertyValues[0].union.ulVal;
         }
 
-        public static string[] GetSubqueueNames(string queueFormatName)
+        public static string[] GetSubqueueNames(string machineName, string queueFormatName)
         {
             int[] propertyIds = new int[1] 
             {
@@ -88,7 +88,7 @@ namespace MsmqFastView.Infrastructure
                 aStatus = IntPtr.Zero
             };
 
-            uint returnCode = MsmqNativeMethods.MQMgmtGetInfo(Environment.MachineName, "QUEUE=" + queueFormatName, queueProperties);
+            uint returnCode = MsmqNativeMethods.MQMgmtGetInfo(machineName, "QUEUE=" + queueFormatName, queueProperties);
 
             aPropId.Free();
             aPropVar.Free();
@@ -116,7 +116,7 @@ namespace MsmqFastView.Infrastructure
             return subQueueNames;
         }
 
-        public static int GetNumberOfMessages(string queueFormatName)
+        public static int GetNumberOfMessages(string machineName, string queueFormatName)
         {
             int[] propertyIds = new int[1] 
             {
@@ -138,7 +138,7 @@ namespace MsmqFastView.Infrastructure
                 aStatus = IntPtr.Zero
             };
 
-            uint returnCode = MsmqNativeMethods.MQMgmtGetInfo(Environment.MachineName, "QUEUE=" + queueFormatName, queueProperties);
+            uint returnCode = MsmqNativeMethods.MQMgmtGetInfo(machineName, "QUEUE=" + queueFormatName, queueProperties);
 
             aPropId.Free();
             aPropVar.Free();
