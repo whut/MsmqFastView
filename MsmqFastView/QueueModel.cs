@@ -24,7 +24,8 @@ namespace MsmqFastView
             List<QueueModel> subqueues = new List<QueueModel>();
             if (!queue.Path.EndsWith(JournalQueueSuffix))
             {
-                this.Name = GetFriendlyName(queue);
+                var messageCount = queue.GetNumberOfMessages();
+                this.Name = GetFriendlyName(queue) + (0 < messageCount ? string.Format(" ({0})", messageCount) : null);
 
                 // journal queues are only accessible from the local machine
                 if (queue.UseJournalQueue && queue.MachineName.Equals(Environment.MachineName, StringComparison.OrdinalIgnoreCase))
