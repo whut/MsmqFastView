@@ -11,6 +11,8 @@ namespace MsmqFastView
 {
     public class QueueModel : INotifyPropertyChanged
     {
+        private const string JournalQueueSuffix = @"\Journal$";
+
         private string path;
 
         private List<MessageModel> messages;
@@ -19,14 +21,28 @@ namespace MsmqFastView
             : this()
         {
             this.path = queue.Path;
-            this.Name = GetFriendlyName(queue);
             List<QueueModel> subqueues = new List<QueueModel>();
-            if (queue.GetNumberOfSubqueues() > 0)
+            if (!queue.Path.EndsWith(JournalQueueSuffix))
             {
-                foreach (string subQueueName in queue.GetSubqueueNames())
+                this.Name = GetFriendlyName(queue);
+
+                // journal queues are only accessible from the local machine
+                if (queue.UseJournalQueue && queue.MachineName.Equals(Environment.MachineName, StringComparison.OrdinalIgnoreCase))
                 {
-                    subqueues.Add(new QueueModel(queue, subQueueName));
+                    subqueues.Add(new QueueModel(new MessageQueue(@".\" + queue.QueueName + JournalQueueSuffix)));
                 }
+
+                if (queue.GetNumberOfSubqueues() > 0)
+                {
+                    foreach (string subQueueName in queue.GetSubqueueNames())
+                    {
+                        subqueues.Add(new QueueModel(queue, subQueueName));
+                    }
+                }
+            }
+            else
+            {
+                this.Name = "Journal";
             }
 
             this.SubQueues = subqueues;
