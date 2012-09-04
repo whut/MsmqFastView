@@ -1,4 +1,3 @@
- - journal queue
  - dead-letter queue
  - outgoing queue
  - click once ?
