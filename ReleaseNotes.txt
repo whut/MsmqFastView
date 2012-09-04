@@ -1,6 +1,7 @@
 HEAD
  - journal queue shown (when enabled)
  - total message count shown in tree view
+ - support for MSMQ 3.0 (without subqueues) - Windows XP/2003
  
 MsmqFastView 0.3.0 2011-10-09 "Agile Viewer"
  - added application icon

@@ -55,7 +55,8 @@ namespace MsmqFastView.Infrastructure
             aPropId.Free();
             aPropVar.Free();
 
-            if (returnCode == MsmqNativeMethods.MQ_ERROR.QUEUE_NOT_ACTIVE)
+            if (returnCode == MsmqNativeMethods.MQ_ERROR.QUEUE_NOT_ACTIVE
+                || returnCode == MsmqNativeMethods.MQ_ERROR.ILLEGAL_PROPID)
             {
                 return 0;
             }
@@ -93,7 +94,8 @@ namespace MsmqFastView.Infrastructure
             aPropId.Free();
             aPropVar.Free();
 
-            if (returnCode == MsmqNativeMethods.MQ_ERROR.QUEUE_NOT_ACTIVE)
+            if (returnCode == MsmqNativeMethods.MQ_ERROR.QUEUE_NOT_ACTIVE
+                || returnCode == MsmqNativeMethods.MQ_ERROR.ILLEGAL_PROPID)
             {
                 return new string[0];
             }

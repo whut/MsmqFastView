@@ -3,7 +3,7 @@ MSMQFastView is very, very simple MSMQ queues viewer. Its UI is optimized for sp
 It supports subqueues and showing body of arbitrary large messages.
 
 Requirements:
- - Windows 7 or Windows Server 2008 R2
+ - Windows XP / Windows Server 2003 (or higher)
  - MSMQ
  - .NET 4.0
 

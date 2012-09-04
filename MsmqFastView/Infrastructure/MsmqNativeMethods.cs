@@ -47,6 +47,7 @@ namespace MsmqFastView.Infrastructure
         public static class MQ_ERROR
         {
             public const uint QUEUE_NOT_ACTIVE = 0xC00E0004;
+            public const uint ILLEGAL_PROPID = 0xC00E0039;
         }
 
         [StructLayout(LayoutKind.Sequential)]
