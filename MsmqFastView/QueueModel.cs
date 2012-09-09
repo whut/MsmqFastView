@@ -11,7 +11,7 @@ namespace MsmqFastView
 {
     public class QueueModel : INotifyPropertyChanged
     {
-        private const string JournalQueueSuffix = @"\Journal$";
+        private const string JournalQueueName = @"JOURNAL";
 
         private string path;
 
@@ -22,28 +22,22 @@ namespace MsmqFastView
         {
             this.path = queue.Path;
             List<QueueModel> subqueues = new List<QueueModel>();
-            if (!queue.Path.EndsWith(JournalQueueSuffix))
+
+            var messageCount = queue.GetNumberOfMessages();
+            this.Name = GetFriendlyName(queue) + (0 < messageCount ? string.Format(" ({0})", messageCount) : null);
+
+            // queue properties (e.g. UseJournalQueue) are only accessible from the local machine
+            if (!queue.MachineName.Equals(Environment.MachineName, StringComparison.OrdinalIgnoreCase) || queue.UseJournalQueue)
             {
-                var messageCount = queue.GetNumberOfMessages();
-                this.Name = GetFriendlyName(queue) + (0 < messageCount ? string.Format(" ({0})", messageCount) : null);
-
-                // journal queues are only accessible from the local machine (TODO: confirm)
-                if (queue.MachineName.Equals(Environment.MachineName, StringComparison.OrdinalIgnoreCase) && queue.UseJournalQueue)
-                {
-                    subqueues.Add(new QueueModel(new MessageQueue(@".\" + queue.QueueName + JournalQueueSuffix)));
-                }
-
-                if (queue.GetNumberOfSubqueues() > 0)
-                {
-                    foreach (string subQueueName in queue.GetSubqueueNames())
-                    {
-                        subqueues.Add(new QueueModel(queue, subQueueName));
-                    }
-                }
+                subqueues.Add(new QueueModel(queue, JournalQueueName));
             }
-            else
+
+            if (queue.GetNumberOfSubqueues() > 0)
             {
-                this.Name = "Journal";
+                foreach (string subQueueName in queue.GetSubqueueNames())
+                {
+                    subqueues.Add(new QueueModel(queue, subQueueName));
+                }
             }
 
             this.SubQueues = subqueues;
@@ -53,7 +47,16 @@ namespace MsmqFastView
             : this()
         {
             this.path = queue.Path + ";" + subQueueName;
-            this.Name = subQueueName;
+
+            if (subQueueName.Equals(JournalQueueName, StringComparison.OrdinalIgnoreCase))
+            {
+                var messageCount = MsmqExtensions.GetNumberOfMessagesInJournal(queue.MachineName, queue.FormatName);
+                this.Name = "Journal" + (0 < messageCount ? string.Format(" ({0})", messageCount) : null);
+            }
+            else
+            {
+                this.Name = subQueueName;
+            }
         }
 
         private QueueModel()

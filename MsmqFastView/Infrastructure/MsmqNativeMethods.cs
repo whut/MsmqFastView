@@ -40,6 +40,7 @@ namespace MsmqFastView.Infrastructure
         public static class PROPID_MGMT_QUEUE
         {
             public const int MESSAGE_COUNT = 7;
+            public const int JOURNAL_MESSAGE_COUNT = 9;
             public const int SUBQUEUE_COUNT = 26;
             public const int QUEUE_SUBQUEUE_NAMES = 27;
         }
