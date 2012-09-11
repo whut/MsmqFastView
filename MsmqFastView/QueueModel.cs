@@ -27,8 +27,8 @@ namespace MsmqFastView
                 var messageCount = queue.GetNumberOfMessages();
                 this.Name = GetFriendlyName(queue) + (0 < messageCount ? string.Format(" ({0})", messageCount) : null);
 
-                // journal queues are only accessible from the local machine
-                if (queue.UseJournalQueue && queue.MachineName.Equals(Environment.MachineName, StringComparison.OrdinalIgnoreCase))
+                // journal queues are only accessible from the local machine (TODO: confirm)
+                if (queue.MachineName.Equals(Environment.MachineName, StringComparison.OrdinalIgnoreCase) && queue.UseJournalQueue)
                 {
                     subqueues.Add(new QueueModel(new MessageQueue(@".\" + queue.QueueName + JournalQueueSuffix)));
                 }

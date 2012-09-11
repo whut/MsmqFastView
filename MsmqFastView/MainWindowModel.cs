@@ -18,7 +18,8 @@ namespace MsmqFastView
         {
             this.ApplicationVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             this.ShowOnlyNonempty = true;
-            this.MachineName = Environment.MachineName;
+            this.Machine = new MachineModel();
+			this.Machine.PropertyChanged += (sender, e) => { if (e.PropertyName == "MachineName") { this.OnMachineNameChanged(); } };
             this.Refresh = new DelegateCommand(o =>
             {
                 this.queues = null;
@@ -57,7 +58,15 @@ namespace MsmqFastView
 
         public string ApplicationVersion { get; private set; }
 
-        public string MachineName { get; private set; }
+		public string MachineName
+		{
+			get
+			{
+				return this.Machine.MachineName;
+			}
+		}
+
+		public MachineModel Machine { get; private set; }
 
         public string Title
         {
@@ -138,5 +147,11 @@ namespace MsmqFastView
                 }
             }
         }
-    }
+
+		private void OnMachineNameChanged()
+		{
+			this.Refresh.Execute(null);
+			this.PropertyChanged.Raise(this, "Title");
+		}
+	}
 }

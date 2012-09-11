@@ -138,6 +138,25 @@
                     <Hyperlink Command="{Binding OpenHomepage}">https://github.com/whut/MsmqFastView</Hyperlink>
                 </TextBlock>
             </StatusBarItem>
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal" DataContext="{Binding Machine}">
+                    <TextBlock>
+                        <Span>Machine: </Span>
+                    </TextBlock>
+                    <TextBlock Visibility="{Binding MachineNameVisibility}">
+                        <Hyperlink Command="{Binding ChangeMachine}">
+                            <Run Text="{Binding MachineName, Mode=OneWay}" />
+                        </Hyperlink>
+                    </TextBlock>
+                    <StackPanel Visibility="{Binding EditMachineNameVisibility}" Orientation="Horizontal" IsVisibleChanged="OnEditMachineNameIsVisibleChanged">
+                        <TextBox Text="{Binding CandidateMachineName}" Name="tbCandidateMachineName" FontSize="10" Padding="0,0,0,0" />
+                        <TextBlock>
+                            <Hyperlink Command="{Binding ConnectToMachine}">Connect</Hyperlink>
+                            <Hyperlink Command="{Binding CancelChangeMachine}">Cancel</Hyperlink>
+                        </TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </StatusBarItem>
         </StatusBar>
     </Grid>
 </Window>
