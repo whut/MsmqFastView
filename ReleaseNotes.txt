@@ -1,4 +1,5 @@
 HEAD
+ - showing message type (normal/report/acknowledgement) and acknowledgement type
  - fixed error while parsing response queue name
  - ability to connect to remote machines (domain->domain or workgroup->domain; domain->workgroup will connect but will not display messages)
  - journal queues shown (local machine: when enabled, remote: always) with message count

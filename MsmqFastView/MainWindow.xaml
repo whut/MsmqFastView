@@ -82,6 +82,8 @@
                     <DataGridTextColumn Header="Response queue" Binding="{Binding ResponseQueue}" />
                     <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
                     <DataGridTextColumn Header="Correlation Id" Binding="{Binding CorrelationId}" />
+                    <DataGridTextColumn Header="Message type" Binding="{Binding MessageType}" />
+                    <DataGridTextColumn Header="Acknowledgement" Binding="{Binding Acknowledgement}" />
                 </DataGrid.Columns>
                 <DataGrid.RowDetailsTemplate>
                     <DataTemplate>

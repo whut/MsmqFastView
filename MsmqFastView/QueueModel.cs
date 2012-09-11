@@ -136,6 +136,8 @@ namespace MsmqFastView
                         messageQueue.MessageReadPropertyFilter.SentTime = true;
                         messageQueue.MessageReadPropertyFilter.ResponseQueue = true;
                         messageQueue.MessageReadPropertyFilter.CorrelationId = true;
+                        messageQueue.MessageReadPropertyFilter.MessageType = true;
+                        messageQueue.MessageReadPropertyFilter.Acknowledgment = true;
 
                         this.messages = messageQueue
                             .Cast<Message>()
@@ -146,7 +148,9 @@ namespace MsmqFastView
                                 m.Label,
                                 m.SentTime,
                                 m.ResponseQueue != null ? GetFriendlyName(m.ResponseQueue) : string.Empty,
-                                m.CorrelationId))
+                                m.CorrelationId,
+                                m.MessageType.ToString(),
+                                m.Acknowledgment.ToString()))
                             .ToList();
                     }
                 }
