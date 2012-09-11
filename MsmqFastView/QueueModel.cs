@@ -11,6 +11,8 @@ namespace MsmqFastView
 {
     public class QueueModel : INotifyPropertyChanged
     {
+        private const string JournalQueueName = @"JOURNAL";
+
         private string path;
 
         private List<MessageModel> messages;
@@ -19,8 +21,17 @@ namespace MsmqFastView
             : this()
         {
             this.path = queue.Path;
-            this.Name = GetFriendlyName(queue);
             List<QueueModel> subqueues = new List<QueueModel>();
+
+            var messageCount = queue.GetNumberOfMessages();
+            this.Name = GetFriendlyName(queue) + (0 < messageCount ? string.Format(" ({0})", messageCount) : null);
+
+            // queue properties (e.g. UseJournalQueue) are only accessible from the local machine
+            if (!queue.MachineName.Equals(Environment.MachineName, StringComparison.OrdinalIgnoreCase) || queue.UseJournalQueue)
+            {
+                subqueues.Add(new QueueModel(queue, JournalQueueName));
+            }
+
             if (queue.GetNumberOfSubqueues() > 0)
             {
                 foreach (string subQueueName in queue.GetSubqueueNames())
@@ -36,7 +47,16 @@ namespace MsmqFastView
             : this()
         {
             this.path = queue.Path + ";" + subQueueName;
-            this.Name = subQueueName;
+
+            if (subQueueName.Equals(JournalQueueName, StringComparison.OrdinalIgnoreCase))
+            {
+                var messageCount = MsmqExtensions.GetNumberOfMessagesInJournal(queue.MachineName, queue.FormatName);
+                this.Name = "Journal" + (0 < messageCount ? string.Format(" ({0})", messageCount) : null);
+            }
+            else
+            {
+                this.Name = subQueueName;
+            }
         }
 
         private QueueModel()
@@ -79,13 +99,27 @@ namespace MsmqFastView
 
         private static string GetFriendlyName(MessageQueue queue)
         {
-            string prefix = "private$\\";
-            if (queue.QueueName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-            {
-                return queue.QueueName.Substring(prefix.Length);
-            }
+            var formatName = queue.FormatName;
 
-            return queue.QueueName;
+            // QueueName is unavailable on remote queue with DIRECT FormatName when the following conditions are met:
+            // * this machine is not joined to a domain, so MSMQ path translation mechanisms work only on local queues
+            // * the MessageQueue object does not have its private field queuePath set 
+            //   (note: queues obtained from GetPrivateQueuesByMachine DO have this field set, but those returned by e.g. Message.ResponseQueue, or constructed from format name string, DO NOT)
+            // in case of exception, better to display raw FormatName than fail to display the entire message list
+            try
+            {
+                string prefix = "private$\\";
+                if (queue.QueueName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    return queue.QueueName.Substring(prefix.Length);
+                }
+
+                return queue.QueueName;
+            }
+            catch (MessageQueueException)
+            {
+                return queue.FormatName;
+            }
         }
 
         private void InitMessages()
@@ -102,6 +136,8 @@ namespace MsmqFastView
                         messageQueue.MessageReadPropertyFilter.SentTime = true;
                         messageQueue.MessageReadPropertyFilter.ResponseQueue = true;
                         messageQueue.MessageReadPropertyFilter.CorrelationId = true;
+                        messageQueue.MessageReadPropertyFilter.MessageType = true;
+                        messageQueue.MessageReadPropertyFilter.Acknowledgment = true;
 
                         this.messages = messageQueue
                             .Cast<Message>()
@@ -112,7 +148,9 @@ namespace MsmqFastView
                                 m.Label,
                                 m.SentTime,
                                 m.ResponseQueue != null ? GetFriendlyName(m.ResponseQueue) : string.Empty,
-                                m.CorrelationId))
+                                m.CorrelationId,
+                                m.MessageType.ToString(),
+                                m.Acknowledgment.ToString()))
                             .ToList();
                     }
                 }

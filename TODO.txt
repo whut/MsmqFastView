@@ -1,4 +1,3 @@
- - journal queue
  - dead-letter queue
  - outgoing queue
  - click once ?
@@ -13,6 +12,5 @@
  - last refresh date in status bar
  - build script
  - disable "Refresh/Purge this queue" by default, to have them disabled before selecting queue
- - support for older MSMQ (without subqueues)
  - detect when MSMQ is not installed
  - config option to disable RSB integration

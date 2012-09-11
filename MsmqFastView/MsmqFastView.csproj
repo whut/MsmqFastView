@@ -69,6 +69,7 @@
     <Compile Include="Infrastructure\MsmqExtensions.cs" />
     <Compile Include="Infrastructure\WindowExtensions.cs" />
     <Compile Include="Infrastructure\WindowNativeMethods.cs" />
+    <Compile Include="MachineModel.cs" />
     <Compile Include="MainWindowModel.cs" />
     <Compile Include="Extensions\MessageDetail.cs" />
     <Compile Include="MessageDetailsModel.cs" />

@@ -1,3 +1,11 @@
+HEAD
+ - showing message type (normal/report/acknowledgement) and acknowledgement type
+ - fixed error while parsing response queue name
+ - ability to connect to remote machines (domain->domain or workgroup->domain; domain->workgroup will connect but will not display messages)
+ - journal queues shown (local machine: when enabled, remote: always) with message count
+ - total message count shown in tree view
+ - support for MSMQ 3.0 (without subqueues) - Windows XP/2003
+ 
 MsmqFastView 0.3.0 2011-10-09 "Agile Viewer"
  - added application icon
  - added extensibility point to add additional message details

@@ -8,7 +8,7 @@ namespace MsmqFastView
 
         private MessageDetailsModel details;
 
-        public MessageModel(string queuePath, string id, string label, DateTime sent, string responseQueue, string correlationId)
+        public MessageModel(string queuePath, string id, string label, DateTime sent, string responseQueue, string correlationId, string messageType, string acknowledgement)
         {
             this.queuePath = queuePath;
             this.Id = id;
@@ -16,6 +16,8 @@ namespace MsmqFastView
             this.Sent = sent;
             this.ResponseQueue = responseQueue;
             this.CorrelationId = correlationId;
+            this.MessageType = messageType;
+            this.Acknowledgement = acknowledgement;
         }
 
         public string Id { get; private set; }
@@ -27,6 +29,10 @@ namespace MsmqFastView
         public string ResponseQueue { get; private set; }
 
         public string CorrelationId { get; private set; }
+
+        public string MessageType { get; private set; }
+
+        public string Acknowledgement { get; private set; }
 
         public MessageDetailsModel Details
         {

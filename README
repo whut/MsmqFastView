@@ -3,9 +3,21 @@ MSMQFastView is very, very simple MSMQ queues viewer. Its UI is optimized for sp
 It supports subqueues and showing body of arbitrary large messages.
 
 Requirements:
- - Windows 7 or Windows Server 2008 R2
+ - Windows XP / Windows Server 2003 (or higher)
  - MSMQ
  - .NET 4.0
+
+Remote connection notes:
+ - with both machines in the same domain, no special configuration is needed
+ - domain client -> workgroup server:
+    * only queue names will be shown, viewing messages will fail (Vista+ OS limitation; MSMQ MMC snap-in has the same problem)
+    * requires accounts with matching names and passwords on both computers, the client may use a domain or local account
+ - workgroup client -> domain server:
+    * viewing messages requires:
+       + turning off RPC security (uncheck "Disable un-authenticated RPC calls" in MSMQ properties on the server)
+       + for each queue, granting "Receive Message" and/or "Receive Journal Message" to "ANONYMOUS LOGON" pseudo-user (on the other hand, MSMQ MMC snap-in requires only "Peek" permission)
+    * requires accounts with matching names and passwords on both computers, must be a local account on the server
+ - works for accounts with administrative privileges on the server; not tested with limited accounts
 
 Homepage: https://github.com/whut/MsmqFastView
 License: MIT

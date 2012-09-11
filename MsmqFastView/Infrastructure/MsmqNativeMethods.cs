@@ -40,6 +40,7 @@ namespace MsmqFastView.Infrastructure
         public static class PROPID_MGMT_QUEUE
         {
             public const int MESSAGE_COUNT = 7;
+            public const int JOURNAL_MESSAGE_COUNT = 9;
             public const int SUBQUEUE_COUNT = 26;
             public const int QUEUE_SUBQUEUE_NAMES = 27;
         }
@@ -47,6 +48,7 @@ namespace MsmqFastView.Infrastructure
         public static class MQ_ERROR
         {
             public const uint QUEUE_NOT_ACTIVE = 0xC00E0004;
+            public const uint ILLEGAL_PROPID = 0xC00E0039;
         }
 
         [StructLayout(LayoutKind.Sequential)]
