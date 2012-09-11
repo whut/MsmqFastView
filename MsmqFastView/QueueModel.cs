@@ -99,13 +99,27 @@ namespace MsmqFastView
 
         private static string GetFriendlyName(MessageQueue queue)
         {
-            string prefix = "private$\\";
-            if (queue.QueueName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-            {
-                return queue.QueueName.Substring(prefix.Length);
-            }
+            var formatName = queue.FormatName;
 
-            return queue.QueueName;
+            // QueueName is unavailable on remote queue with DIRECT FormatName when the following conditions are met:
+            // * this machine is not joined to a domain, so MSMQ path translation mechanisms work only on local queues
+            // * the MessageQueue object does not have its private field queuePath set 
+            //   (note: queues obtained from GetPrivateQueuesByMachine DO have this field set, but those returned by e.g. Message.ResponseQueue, or constructed from format name string, DO NOT)
+            // in case of exception, better to display raw FormatName than fail to display the entire message list
+            try
+            {
+                string prefix = "private$\\";
+                if (queue.QueueName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    return queue.QueueName.Substring(prefix.Length);
+                }
+
+                return queue.QueueName;
+            }
+            catch (MessageQueueException)
+            {
+                return queue.FormatName;
+            }
         }
 
         private void InitMessages()

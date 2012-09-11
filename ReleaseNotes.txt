@@ -1,5 +1,7 @@
 HEAD
- - journal queue shown (when enabled)
+ - fixed error while parsing response queue name
+ - ability to connect to remote machines (domain->domain or workgroup->domain; domain->workgroup will connect but will not display messages)
+ - journal queues shown (local machine: when enabled, remote: always) with message count
  - total message count shown in tree view
  - support for MSMQ 3.0 (without subqueues) - Windows XP/2003
  
