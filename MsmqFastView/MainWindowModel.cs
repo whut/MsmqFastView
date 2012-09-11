@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Messaging;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using MsmqFastView.Infrastructure;
@@ -16,7 +17,7 @@ namespace MsmqFastView
 
         public MainWindowModel()
         {
-            this.ApplicationVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            this.ApplicationVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             this.ShowOnlyNonempty = true;
             this.Machine = new MachineModel();
 			this.Machine.PropertyChanged += (sender, e) => { if (e.PropertyName == "MachineName") { this.OnMachineNameChanged(); } };
@@ -101,7 +102,11 @@ namespace MsmqFastView
                 this.queues = new List<QueueModel>();
                 try
                 {
-                    foreach (MessageQueue queue in MessageQueue.GetPrivateQueuesByMachine(this.MachineName)
+                    IEnumerable<MessageQueue> queueSource = MessageQueue.GetPrivateQueuesByMachine(this.MachineName);
+
+                    queueSource = ApplyNet45WorkaroundIfNeeded(queueSource);
+
+                    foreach (MessageQueue queue in queueSource
                         .Where(q => !this.ShowOnlyNonempty || q.GetNumberOfMessages() != 0)
                         .OrderBy(mq => mq.QueueName))
                     {
@@ -125,6 +130,77 @@ namespace MsmqFastView
                     this.PropertyChanged.Raise(this, "LastRefresh");
                 }
             }
+        }
+
+        private static IEnumerable<MessageQueue> ApplyNet45WorkaroundIfNeeded(IEnumerable<MessageQueue> queueSource)
+        {
+            // 4.0 RTM -> 4.0.30319.1
+            // 4.0.1 -> 4.0.30319.232
+            // 4.0.2 -> 4.0.30319.245
+            // 4.0.3 -> 4.0.30319.276
+            // 4.5 Dev -> 4.0.30319.17020
+            // 4.5 Beta -> 4.0.30319.17379
+            // 4.5 RC -> 4.0.30319.17626
+            // 4.5 RTM -> 4.0.30319.17929
+
+            // we want to do it only on 4.5 (all releases)
+            if (Environment.Version.Major == 4
+                && Environment.Version.Minor == 0
+                && Environment.Version.Build == 30319
+                && Environment.Version.Revision >= 17000)
+            {
+                queueSource = queueSource.Select(mq => WorkAroundNet45FormatNameBug(mq));
+            }
+            return queueSource;
+        }
+
+        private static MessageQueue WorkAroundNet45FormatNameBug(MessageQueue mq)
+        {
+            if (mq == null)
+            {
+                return mq;
+            }
+
+            // In .NET 2.0 and 4.0, if queue is constructed from format name ("FormatName:...."), 
+            // accessing the FormatName property results in a simple substring operation (to trim the "FormatName:" prefix).
+
+            // In .NET 4.5, some overzealous Microsoft programmer thought it was insufficient,
+            // and if the private queuePath field is set, the FormatName property calls ResolveFormatNameFromQueuePath,
+            // which calls the native MQPathNameToFormatName API, which does not support remote paths on workgroup (non-domain joined) machines.
+            // If the private queuePath field is NOT set, the old string manipulation code path is used.
+            // The computed format name is then cached in a field.
+
+            // (MessageQueue.GetPrivateQueuesByMachine DOES set this field. The MessageQueue constructor does NOT.)
+
+            // The workaround is to clear the queuePath field, then access FormatName to cause the format name to be cached. 
+            // Afterwards, queuePath may be restored.
+            // This effectively simulates .NET 4.0 behavior.
+
+            var field = mq.GetType().GetMember("queuePath", MemberTypes.Field, BindingFlags.Instance | BindingFlags.NonPublic).SingleOrDefault() as FieldInfo;
+
+            // no field? apparently we are running on a future framework; the internals have changed -> don't touch anything
+            if (field == null)
+            {
+                return mq;
+            }
+
+            // save existing queuePath value
+            var savedPath = field.GetValue(mq);
+            if (savedPath == null)
+            {
+                // huh? nothing we can do
+                return mq;
+            }
+
+            // clear the field
+            field.SetValue(mq, null);
+            
+            // trigger caching of format name
+            var formatName = mq.FormatName;
+
+            // restore queuePath value
+            field.SetValue(mq, savedPath);
+            return mq;
         }
 
         private IEnumerable<MessageQueue> GetQueueWithSubQueues(MessageQueue queue)
