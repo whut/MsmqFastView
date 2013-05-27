@@ -125,7 +125,7 @@ namespace MsmqFastView
                         + "\n"
                         + "Details:\n"
                         + ex.ToString(),
-                        "Error during reading messages",
+                        "MsmqFastView - Error during reading messages",
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
                 }
